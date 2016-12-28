@@ -1,153 +1,79 @@
 package rules
 
 import (
+	"fmt"
+	"regexp"
+	"strings"
 	"time"
-
-	"github.com/dlclark/regexp2"
-	"github.com/pkg/errors"
 )
 
 type Rule interface {
-	Find(string) ([]*Match, error)
+	Find(string, *Options) *Match
 }
 
-type Applier interface {
-	Apply(*Match, *Context) error
-}
+type Options struct {
+	Strict bool
 
-type Context struct {
-	Text string
-
-	// accumulator of relative values
-	Duration time.Duration
-
-	// Aboslute values
-	Year, Month, Weekday, Day, Hour, Minute, Second *int
-	Location                                        *time.Location
-}
-
-func (c *Context) Time(t time.Time) (time.Time, error) {
-	if t.IsZero() {
-		t = time.Now()
-	}
-
-	if c.Duration != 0 {
-		t = t.Add(c.Duration)
-	}
-
-	if c.Year != nil {
-		t = time.Date(*c.Year, t.Month(), t.Day(), t.Hour(),
-			t.Minute(), t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Month != nil {
-		t = time.Date(t.Year(), time.Month(*c.Month), t.Day(),
-			t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Weekday != nil {
-		diff := int(time.Weekday(*c.Weekday) - t.Weekday())
-		t = time.Date(t.Year(), t.Month(), t.Day()+diff, t.Hour(),
-			t.Minute(), t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Day != nil {
-		t = time.Date(t.Year(), t.Month(), *c.Day, t.Hour(),
-			t.Minute(), t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Hour != nil {
-		t = time.Date(t.Year(), t.Month(), t.Day(), *c.Hour,
-			t.Minute(), t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Minute != nil {
-		t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(),
-			*c.Minute, t.Second(), t.Nanosecond(), t.Location())
-	}
-
-	if c.Second != nil {
-		t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(),
-			t.Minute(), *c.Second, t.Nanosecond(), t.Location())
-	}
-
-	if c.Location != nil {
-		t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(),
-			t.Minute(), t.Second(), t.Nanosecond(), c.Location)
-	}
-
-	return t, nil
+	Afternoon, Everning, Morning, Noon int
 }
 
 type Match struct {
-	*regexp2.Match
-	Order   float64
-	Applier Applier
+	Left, Right int
+	Groups      []string
+	Order       float64
+	Applier     func(*Match, *Context, *Options, time.Time) error
 }
 
-func (m *Match) Apply(c *Context) error {
-	return m.Applier.Apply(m, c)
-}
-
-type MatchByIndex []*Match
-
-func (m MatchByIndex) Len() int {
-	return len(m)
-}
-
-func (m MatchByIndex) Swap(i, j int) {
-	m[i], m[j] = m[j], m[i]
-}
-
-func (m MatchByIndex) Less(i, j int) bool {
-	return m[i].Index < m[j].Index
-}
-
-type MatchByOrderAndIndex []*Match
-
-func (m MatchByOrderAndIndex) Len() int {
-	return len(m)
-}
-
-func (m MatchByOrderAndIndex) Swap(i, j int) {
-	m[i], m[j] = m[j], m[i]
-}
-
-func (m MatchByOrderAndIndex) Less(i, j int) bool {
-	if m[i].Order < m[j].Order {
-		return true
-	} else if m[i].Order > m[j].Order {
-		return false
+func (m Match) String() string {
+	if len(m.Groups) == 0 {
+		return ""
 	}
-	return m[i].Index < m[j].Index
+	return strings.Join(m.Groups[1:], "")
 }
 
-func AllMatch(re *regexp2.Regexp, text string, order float64, applier Applier) ([]*Match, error) {
-	m, err := re.FindStringMatch(text)
-	if err != nil {
-		return nil, errors.Wrap(err, "find string match")
+func (m *Match) Apply(c *Context, o *Options, t time.Time) error {
+	return m.Applier(m, c, o, t)
+}
+
+type F struct {
+	RegExp       *regexp.Regexp
+	RegExpStrict *regexp.Regexp
+	Applier      func(*Match, *Context, *Options, time.Time) error
+	Order        float64
+}
+
+func (f *F) Find(text string, o *Options) *Match {
+	m := &Match{
+		Order:   f.Order,
+		Applier: f.Applier,
 	}
 
-	matches := []*Match{&Match{
-		Match:   m,
-		Order:   order,
-		Applier: applier,
-	}}
-
-	for {
-		m, err = re.FindNextMatch(m)
-		if err != nil {
-			return nil, errors.Wrap(err, "find next match")
-		}
-		if m == nil {
-			break
+	if o.Strict && f.RegExpStrict != nil {
+		m.Groups = f.RegExpStrict.FindStringSubmatch(text)
+		if len(m.Groups) != 0 {
+			i := f.RegExpStrict.FindStringSubmatchIndex(text)
+			if len(i) >= 3 {
+				m.Left = i[3]
+				m.Right = i[3] + len(m.String())
+			}
 		} else {
-			matches = append(matches, &Match{
-				Match:   m,
-				Order:   order,
-				Applier: applier,
-			})
+			return nil
+		}
+	} else {
+		m.Groups = f.RegExp.FindStringSubmatch(text)
+		if len(m.Groups) != 0 {
+			fmt.Println(1)
+			i := f.RegExp.FindStringSubmatchIndex(text)
+			fmt.Println(2, i)
+			if len(i) >= 3 {
+				m.Left = i[2]
+				m.Right = i[len(i)-1]
+			}
+			fmt.Println(3, m.Left, m.Right)
+		} else {
+			return nil
 		}
 	}
-	return matches, nil
+
+	return m
 }

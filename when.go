@@ -1,24 +1,22 @@
 package when
 
 import (
+	"fmt"
 	"sort"
 	"time"
 
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/en"
 	"github.com/pkg/errors"
 )
 
-type Options struct {
-	Distance int
-}
-
 type Parser struct {
-	options    *Options
+	options    *rules.Options
 	rules      []rules.Rule
 	middleware []func(string) (string, error)
 }
 
-func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, error) {
+func (p *Parser) Parse(text string, ts ...time.Time) (time.Time, int, string, error) {
 	start := -1
 	seq := ""
 	t := time.Time{}
@@ -29,6 +27,10 @@ func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, err
 
 	if t.IsZero() {
 		t = time.Now()
+	}
+
+	if p.options == nil {
+		p.options = defaultOptions
 	}
 
 	var err error
@@ -42,13 +44,10 @@ func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, err
 
 	// find all matches
 	matches := make([]*rules.Match, 0)
-	for i, rule := range p.rules {
-		r, err := rule.Find(text)
-		if err != nil {
-			return t, start, seq, errors.Wrapf(err, "find match #%d", i)
-		}
+	for _, rule := range p.rules {
+		r := rule.Find(text, p.options)
 		if r != nil {
-			matches = append(matches, r...)
+			matches = append(matches, r)
 		}
 	}
 
@@ -60,12 +59,12 @@ func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, err
 	// find a cluster
 	sort.Sort(rules.MatchByIndex(matches))
 
-	end := matches[0].Index
-	start = matches[0].Index
+	end := matches[0].Right
+	start = matches[0].Left
 
 	for i, m := range matches {
-		if m.Index <= end+1 {
-			end = m.Index + len(m.String())
+		if m.Left <= end+1 {
+			end = m.Right
 		} else {
 			matches = matches[:i]
 			break
@@ -73,13 +72,14 @@ func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, err
 	}
 
 	seq = text[start:end]
+	fmt.Println("seq", start, end)
 
 	// apply rules
 	sort.Sort(rules.MatchByOrderAndIndex(matches))
 
 	ctx := &rules.Context{Text: seq}
 	for i, applier := range matches {
-		err = applier.Apply(ctx)
+		err = applier.Apply(ctx, p.options, t)
 		if err != nil {
 			return t, start, seq, errors.Wrapf(err, "apply modifications to the context #%d", i)
 		}
@@ -93,28 +93,34 @@ func (p *Parser) When(text string, ts ...time.Time) (time.Time, int, string, err
 	return t, start, seq, nil
 }
 
-func (p *Parser) Add(r rules.Rule) {
-	p.rules = append(p.rules, r)
+func (p *Parser) Add(r ...rules.Rule) {
+	p.rules = append(p.rules, r...)
 }
 
-func (p *Parser) Use(f func(string) (string, error)) {
-	p.middleware = append(p.middleware, f)
+func (p *Parser) Use(f ...func(string) (string, error)) {
+	p.middleware = append(p.middleware, f...)
 }
 
-func New(o *Options) *Parser {
+func (p *Parser) SetOptions(o *rules.Options) {
+	p.options = o
+}
+
+func New(o *rules.Options) *Parser {
+	if o == nil {
+		return &Parser{options: defaultOptions}
+	}
 	return &Parser{options: o}
 }
 
-/*
-	ask := when.New(nil)
+var EN *Parser
 
-	// to be able to get rid of some corner cases
-	ask.Use(func(text string) (string, error) { return text, nil })
+var defaultOptions = &rules.Options{
+	Morning: 8,
+}
 
-	ask.Add(Rule)
-	ask.Add(Rule)
-	ask.Add(Rule)
+// var RU *Parser
 
-	t, index, text, err := ask.When("in 3 hours")
-
-*/
+func init() {
+	EN = New(defaultOptions)
+	EN.Add(en.All...)
+}
