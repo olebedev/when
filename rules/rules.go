@@ -21,6 +21,8 @@ type Options struct {
 	Afternoon, Everning, Morning, Noon int
 
 	Distance int
+
+	// TODO
 	// WeekStartsOn time.Weekday
 }
 
@@ -29,18 +31,18 @@ type Match struct {
 	Text        string
 	Captures    []string
 	Order       float64
-	Applier     func(*Match, *Context, *Options, time.Time) error
+	Applier     func(*Match, *Context, *Options, time.Time) (bool, error)
 }
 
 func (m Match) String() string { return m.Text }
 
-func (m *Match) Apply(c *Context, o *Options, t time.Time) error {
+func (m *Match) Apply(c *Context, o *Options, t time.Time) (bool, error) {
 	return m.Applier(m, c, o, t)
 }
 
 type F struct {
 	RegExp  *regexp.Regexp
-	Applier func(*Match, *Context, *Options, time.Time) error
+	Applier func(*Match, *Context, *Options, time.Time) (bool, error)
 }
 
 func (f *F) Find(text string) *Match {

@@ -88,11 +88,17 @@ func (p *Parser) Parse(text string, base time.Time) (*Result, error) {
 	sort.Sort(rules.MatchByOrder(matches))
 
 	ctx := &rules.Context{Text: res.Text}
+	applied := false
 	for _, applier := range matches {
-		err = applier.Apply(ctx, p.options, res.Time)
+		ok, err := applier.Apply(ctx, p.options, res.Time)
 		if err != nil {
 			return nil, err
 		}
+		applied = ok || applied
+	}
+
+	if !applied {
+		return nil, nil
 	}
 
 	res.Time, err = ctx.Time(res.Time)

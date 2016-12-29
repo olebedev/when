@@ -20,7 +20,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 				"(" + INTEGER_WORDS_PATTERN + "|[0-9]+|an?(?:\\s*few)?|half(?:\\s*an?)?)\\s*" +
 				"(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?)\\s*" +
 				"(?:\\W|$)"),
-		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) error {
+		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 
 			numStr := strings.TrimSpace(m.Captures[1])
 
@@ -38,7 +38,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 			} else {
 				num, err = strconv.Atoi(numStr)
 				if err != nil {
-					return errors.Wrapf(err, "convert '%s' to int", numStr)
+					return false, errors.Wrapf(err, "convert '%s' to int", numStr)
 				}
 			}
 
@@ -101,7 +101,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 				}
 			}
 
-			return nil
+			return true, nil
 		},
 	}
 }

@@ -21,7 +21,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 			"(?:\\W|$)",
 		),
 
-		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) error {
+		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			_ = overwrite
 
 			day := strings.ToLower(strings.TrimSpace(m.Captures[1]))
@@ -31,11 +31,11 @@ func Weekday(s rules.Strategy) rules.Rule {
 			}
 			dayInt, ok := WEEKDAY_OFFSET[day]
 			if !ok {
-				return nil
+				return false, nil
 			}
 
 			if c.Duration != 0 && !overwrite {
-				return nil
+				return false, nil
 			}
 
 			// Switch:
@@ -80,7 +80,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 				}
 			}
 
-			return nil
+			return true, nil
 		},
 	}
 }

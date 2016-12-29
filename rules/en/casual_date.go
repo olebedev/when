@@ -14,7 +14,7 @@ func CasualDate(s rules.Strategy) rules.Rule {
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)(now|today|tonight|last\\s*night|(?:tomorrow|tmr|yesterday)\\s*|tomorrow|tmr|yesterday)(?:\\W|$)"),
-		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) error {
+		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
 
 			switch {
@@ -39,7 +39,7 @@ func CasualDate(s rules.Strategy) rules.Rule {
 				}
 			}
 
-			return nil
+			return true, nil
 		},
 	}
 }
