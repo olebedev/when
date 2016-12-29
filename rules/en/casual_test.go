@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 )
 
@@ -18,7 +19,7 @@ func TestCasualDate(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(en.CasualDate())
+	w.Add(en.CasualDate(rules.Skip))
 
 	ApplyFixtures(t, "en.CasualDate", w, fixt)
 }
@@ -32,7 +33,7 @@ func TestCasualTime(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(en.CasualTime())
+	w.Add(en.CasualTime(rules.Skip))
 
 	ApplyFixtures(t, "en.CasualTime", w, fixt)
 }
@@ -44,8 +45,8 @@ func TestCasualDateCasualTime(t *testing.T) {
 
 	w := when.New(nil)
 	w.Add(
-		en.CasualDate(),
-		en.CasualTime(),
+		en.CasualDate(rules.Skip),
+		en.CasualTime(rules.OverWrite),
 	)
 
 	ApplyFixtures(t, "en.CasualDate|en.CasualTime", w, fixt)

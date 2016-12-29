@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 )
 
@@ -29,7 +30,7 @@ func TestWeekday(t *testing.T) {
 
 	w := when.New(nil)
 
-	w.Add(en.Weekday())
+	w.Add(en.Weekday(rules.OverWrite))
 
 	ApplyFixtures(t, "en.Weekday", w, fixt)
 }

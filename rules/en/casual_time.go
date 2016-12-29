@@ -9,8 +9,8 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-func CasualTime(o ...bool) rules.Rule {
-	overwrite := len(o) != 0
+func CasualTime(s rules.Strategy) rules.Rule {
+	overwrite := s == rules.OverWrite
 
 	return &rules.F{
 		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((this)?\s*(morning|afternoon|evening|noon))`),

@@ -9,8 +9,8 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-func CasualDate(o ...bool) rules.Rule {
-	overwrite := len(o) != 0
+func CasualDate(s rules.Strategy) rules.Rule {
+	overwrite := s == rules.OverWrite
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)(now|today|tonight|last\\s*night|(?:tomorrow|tmr|yesterday)\\s*|tomorrow|tmr|yesterday)(?:\\W|$)"),

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 )
 
@@ -26,7 +27,7 @@ func TestDeadline(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(en.Deadline())
+	w.Add(en.Deadline(rules.Skip))
 
 	ApplyFixtures(t, "en.Deadline", w, fixt)
 }

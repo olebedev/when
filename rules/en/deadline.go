@@ -11,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func Deadline(o ...bool) rules.Rule {
-	overwrite := len(o) != 0
+func Deadline(s rules.Strategy) rules.Rule {
+	overwrite := s == rules.OverWrite
 
 	return &rules.F{
 		RegExp: regexp.MustCompile(

@@ -8,8 +8,8 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-func Weekday(o ...bool) rules.Rule {
-	overwrite := len(o) != 0
+func Weekday(s rules.Strategy) rules.Rule {
+	overwrite := s == rules.OverWrite
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)" +

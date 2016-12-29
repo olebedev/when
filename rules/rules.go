@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type Strategy int
+
+const (
+	Skip Strategy = iota
+	Merge
+	OverWrite
+)
+
 type Rule interface {
 	Find(string) *Match
 }
