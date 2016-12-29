@@ -14,21 +14,16 @@ func (m MatchByIndex) Less(i, j int) bool {
 	return m[i].Left < m[j].Left
 }
 
-type MatchByOrderAndIndex []*Match
+type MatchByOrder []*Match
 
-func (m MatchByOrderAndIndex) Len() int {
+func (m MatchByOrder) Len() int {
 	return len(m)
 }
 
-func (m MatchByOrderAndIndex) Swap(i, j int) {
+func (m MatchByOrder) Swap(i, j int) {
 	m[i], m[j] = m[j], m[i]
 }
 
-func (m MatchByOrderAndIndex) Less(i, j int) bool {
-	if m[i].Order < m[j].Order {
-		return true
-	} else if m[i].Order > m[j].Order {
-		return false
-	}
-	return m[i].Left < m[j].Left
+func (m MatchByOrder) Less(i, j int) bool {
+	return m[i].Order < m[j].Order
 }

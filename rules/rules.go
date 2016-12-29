@@ -1,79 +1,71 @@
 package rules
 
 import (
-	"fmt"
 	"regexp"
-	"strings"
 	"time"
 )
 
 type Rule interface {
-	Find(string, *Options) *Match
+	Find(string) *Match
 }
 
 type Options struct {
-	Strict bool
-
 	Afternoon, Everning, Morning, Noon int
+
+	Distance int
+	// WeekStartsOn time.Weekday
 }
 
 type Match struct {
 	Left, Right int
-	Groups      []string
+	Text        string
+	Captures    []string
 	Order       float64
 	Applier     func(*Match, *Context, *Options, time.Time) error
 }
 
-func (m Match) String() string {
-	if len(m.Groups) == 0 {
-		return ""
-	}
-	return strings.Join(m.Groups[1:], "")
-}
+func (m Match) String() string { return m.Text }
 
 func (m *Match) Apply(c *Context, o *Options, t time.Time) error {
 	return m.Applier(m, c, o, t)
 }
 
 type F struct {
-	RegExp       *regexp.Regexp
-	RegExpStrict *regexp.Regexp
-	Applier      func(*Match, *Context, *Options, time.Time) error
-	Order        float64
+	RegExp  *regexp.Regexp
+	Applier func(*Match, *Context, *Options, time.Time) error
 }
 
-func (f *F) Find(text string, o *Options) *Match {
+func (f *F) Find(text string) *Match {
 	m := &Match{
-		Order:   f.Order,
 		Applier: f.Applier,
+		Left:    -1,
 	}
 
-	if o.Strict && f.RegExpStrict != nil {
-		m.Groups = f.RegExpStrict.FindStringSubmatch(text)
-		if len(m.Groups) != 0 {
-			i := f.RegExpStrict.FindStringSubmatchIndex(text)
-			if len(i) >= 3 {
-				m.Left = i[3]
-				m.Right = i[3] + len(m.String())
-			}
-		} else {
-			return nil
+	indexes := f.RegExp.FindStringSubmatchIndex(text)
+
+	length := len(indexes)
+	if length <= 2 {
+
+		return nil
+	}
+
+	for i := 2; i < length; i += 2 {
+		if m.Left == -1 && indexes[i] >= 0 {
+			m.Left = indexes[i]
 		}
-	} else {
-		m.Groups = f.RegExp.FindStringSubmatch(text)
-		if len(m.Groups) != 0 {
-			fmt.Println(1)
-			i := f.RegExp.FindStringSubmatchIndex(text)
-			fmt.Println(2, i)
-			if len(i) >= 3 {
-				m.Left = i[2]
-				m.Right = i[len(i)-1]
-			}
-			fmt.Println(3, m.Left, m.Right)
+		// check if capture was found
+		if indexes[i] >= 0 && indexes[i+1] >= 0 {
+			m.Captures = append(m.Captures, text[indexes[i]:indexes[i+1]])
+			m.Right = indexes[i+1]
 		} else {
-			return nil
+			m.Captures = append(m.Captures, "")
 		}
 	}
 
+	if len(m.Captures) == 0 {
+		return nil
+	}
+
+	m.Text = text[m.Left:m.Right]
 	return m
 }

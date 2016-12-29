@@ -13,8 +13,7 @@ func CasualTime(o ...bool) rules.Rule {
 	overwrite := len(o) != 0
 
 	return &rules.F{
-		RegExp: regexp.MustCompile(`(\W|^)((this)?\s*(morning|afternoon|evening|noon))`),
-		Order:  2,
+		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((this)?\s*(morning|afternoon|evening|noon))`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) error {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))

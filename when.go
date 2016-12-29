@@ -1,32 +1,39 @@
 package when
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
 	"github.com/olebedev/when/rules"
-	"github.com/olebedev/when/rules/en"
 	"github.com/pkg/errors"
 )
 
+// Parser is a struct which contains options
+// rules, and middlewares to call
 type Parser struct {
 	options    *rules.Options
 	rules      []rules.Rule
 	middleware []func(string) (string, error)
 }
 
-func (p *Parser) Parse(text string, ts ...time.Time) (time.Time, int, string, error) {
-	start := -1
-	seq := ""
-	t := time.Time{}
-	for _, _t := range ts {
-		t = _t
-		break
-	}
+// Result is a struct which contains parsing meta-info
+type Result struct {
+	// Index is a start index
+	Index int
+	// Text is a text found and processed
+	Text string
+	// Source is input string
+	Source string
+	// Time is an output time
+	Time time.Time
+}
 
-	if t.IsZero() {
-		t = time.Now()
+// Parse returns Result and error if any. If have not matches it returns nil, nil.
+func (p *Parser) Parse(text string, base time.Time) (*Result, error) {
+	res := Result{
+		Source: text,
+		Time:   base,
+		Index:  -1,
 	}
 
 	if p.options == nil {
@@ -35,35 +42,39 @@ func (p *Parser) Parse(text string, ts ...time.Time) (time.Time, int, string, er
 
 	var err error
 	// apply middlewares
-	for i, b := range p.middleware {
+	for _, b := range p.middleware {
 		text, err = b(text)
 		if err != nil {
-			return t, start, seq, errors.Wrapf(err, "apply middleware func #%d", i)
+			return nil, err
 		}
 	}
 
 	// find all matches
 	matches := make([]*rules.Match, 0)
+	c := float64(0)
 	for _, rule := range p.rules {
-		r := rule.Find(text, p.options)
+		r := rule.Find(text)
 		if r != nil {
+			r.Order = c
+			c++
 			matches = append(matches, r)
 		}
 	}
 
 	// not found
 	if len(matches) == 0 {
-		return t, start, seq, nil
+		return nil, nil
 	}
 
 	// find a cluster
 	sort.Sort(rules.MatchByIndex(matches))
 
+	// get borders of the matches
 	end := matches[0].Right
-	start = matches[0].Left
+	res.Index = matches[0].Left
 
 	for i, m := range matches {
-		if m.Left <= end+1 {
+		if m.Left <= end+p.options.Distance {
 			end = m.Right
 		} else {
 			matches = matches[:i]
@@ -71,40 +82,43 @@ func (p *Parser) Parse(text string, ts ...time.Time) (time.Time, int, string, er
 		}
 	}
 
-	seq = text[start:end]
-	fmt.Println("seq", start, end)
+	res.Text = text[res.Index:end]
 
 	// apply rules
-	sort.Sort(rules.MatchByOrderAndIndex(matches))
+	sort.Sort(rules.MatchByOrder(matches))
 
-	ctx := &rules.Context{Text: seq}
-	for i, applier := range matches {
-		err = applier.Apply(ctx, p.options, t)
+	ctx := &rules.Context{Text: res.Text}
+	for _, applier := range matches {
+		err = applier.Apply(ctx, p.options, res.Time)
 		if err != nil {
-			return t, start, seq, errors.Wrapf(err, "apply modifications to the context #%d", i)
+			return nil, err
 		}
 	}
 
-	t, err = ctx.Time(t)
+	res.Time, err = ctx.Time(res.Time)
 	if err != nil {
-		return t, start, seq, errors.Wrap(err, "bind context")
+		return nil, errors.Wrap(err, "bind context")
 	}
 
-	return t, start, seq, nil
+	return &res, nil
 }
 
+// Add adds  given rules to the main chain.
 func (p *Parser) Add(r ...rules.Rule) {
 	p.rules = append(p.rules, r...)
 }
 
+// Use adds give functions to middlewares.
 func (p *Parser) Use(f ...func(string) (string, error)) {
 	p.middleware = append(p.middleware, f...)
 }
 
+// SetOptions sets options object to use.
 func (p *Parser) SetOptions(o *rules.Options) {
 	p.options = o
 }
 
+// New returns Parser initialised with given options.
 func New(o *rules.Options) *Parser {
 	if o == nil {
 		return &Parser{options: defaultOptions}
@@ -112,15 +126,7 @@ func New(o *rules.Options) *Parser {
 	return &Parser{options: o}
 }
 
-var EN *Parser
-
+// default options for internal usage
 var defaultOptions = &rules.Options{
-	Morning: 8,
-}
-
-// var RU *Parser
-
-func init() {
-	EN = New(defaultOptions)
-	EN.Add(en.All...)
+	Distance: 1,
 }

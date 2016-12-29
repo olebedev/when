@@ -3,9 +3,9 @@ package en
 import "github.com/olebedev/when/rules"
 
 var All = []rules.Rule{
-	CasualDate(),
-	CasualTime(),
-	// Deadline(),
+	CasualDate(true),
+	CasualTime(true),
+	Deadline(true),
 }
 
 var WEEKDAY_OFFSET = map[string]int{
@@ -25,6 +25,8 @@ var WEEKDAY_OFFSET = map[string]int{
 	"saturday":  6,
 	"sat":       6,
 }
+
+var WEEKDAY_OFFSET_PATTERN = "(?:sunday|sun|monday|mon|tuesday|tue|wednesday|wed|thursday|thur|thu|friday|fri|saturday|sat)"
 
 var MONTH_OFFSET = map[string]int{
 	"january":   1,
