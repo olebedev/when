@@ -22,6 +22,8 @@ type Options struct {
 
 	Distance int
 
+	MatchByOrder bool
+
 	// TODO
 	// WeekStartsOn time.Weekday
 }

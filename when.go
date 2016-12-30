@@ -85,7 +85,9 @@ func (p *Parser) Parse(text string, base time.Time) (*Result, error) {
 	res.Text = text[res.Index:end]
 
 	// apply rules
-	sort.Sort(rules.MatchByOrder(matches))
+	if p.options.MatchByOrder {
+		sort.Sort(rules.MatchByOrder(matches))
+	}
 
 	ctx := &rules.Context{Text: res.Text}
 	applied := false
@@ -134,5 +136,6 @@ func New(o *rules.Options) *Parser {
 
 // default options for internal usage
 var defaultOptions = &rules.Options{
-	Distance: 1,
+	Distance:     5,
+	MatchByOrder: true,
 }
