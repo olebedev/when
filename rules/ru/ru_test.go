@@ -1,18 +1,15 @@
-package common_test
+package ru_test
 
 import (
 	"testing"
 	"time"
 
 	"github.com/olebedev/when"
-	"github.com/olebedev/when/rules/common"
+	"github.com/olebedev/when/rules/en"
 	"github.com/stretchr/testify/require"
 )
 
-var null = time.Date(2016, time.July, 15, 0, 0, 0, 0, time.UTC)
-
-// July 15 days offset from the begining of the year
-const OFFSET = 197
+var null = time.Date(2016, time.January, 6, 0, 0, 0, 0, time.UTC)
 
 type Fixture struct {
 	Text   string
@@ -50,9 +47,19 @@ func ApplyFixturesErr(t *testing.T, name string, w *when.Parser, fixt []Fixture)
 
 func TestAll(t *testing.T) {
 	w := when.New(nil)
-	w.Add(common.All...)
+	w.Add(en.All...)
 
 	// complex cases
-	fixt := []Fixture{}
-	ApplyFixtures(t, "common.All...", w, fixt)
+	fixt := []Fixture{
+	// {"tonight at 11.10 pm", 0, "tonight at 11.10 pm", (23 * time.Hour) + (10 * time.Minute)},
+	// {"tonight next Monday", 0, "tonight next Monday", ((5 * 24) + 23) * time.Hour},
+	// {"next Monday tonight", 0, "next Monday tonight", ((5 * 24) + 23) * time.Hour},
+	// {"at Friday afternoon", 3, "Friday afternoon", ((2 * 24) + 15) * time.Hour},
+	// {"in next tuesday at 14:00", 3, "next tuesday at 14:00", ((6 * 24) + 14) * time.Hour},
+	// {"in next tuesday at 2p", 3, "next tuesday at 2p", ((6 * 24) + 14) * time.Hour},
+	// {"in next wednesday at 2:25 p.m.", 3, "next wednesday at 2:25 p.m.", (((7 * 24) + 14) * time.Hour) + (25 * time.Minute)},
+	// {"at 11 am past tuesday", 3, "11 am past tuesday", -13 * time.Hour},
+	}
+
+	ApplyFixtures(t, "ru.All...", w, fixt)
 }
