@@ -12,8 +12,6 @@ import (
 // https://play.golang.org/p/D19wPQBraq
 
 func CasualDate(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.OverWrite
-
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
 			"(сейчас|сегодня|завтра|вчера)" +
@@ -23,17 +21,17 @@ func CasualDate(s rules.Strategy) rules.Rule {
 
 			switch {
 			case strings.Contains(lower, "вечер"):
-				if c.Hour == nil || overwrite {
+				if c.Hour == nil || s == rules.OverWrite {
 					c.Hour = pointer.ToInt(23)
 				}
 			case strings.Contains(lower, "сегодня"):
 				// c.Hour = pointer.ToInt(18)
 			case strings.Contains(lower, "завтра"):
-				if c.Duration == 0 || overwrite {
+				if c.Duration == 0 || s == rules.OverWrite {
 					c.Duration += time.Hour * 24
 				}
 			case strings.Contains(lower, "вчера"):
-				if c.Duration == 0 || overwrite {
+				if c.Duration == 0 || s == rules.OverWrite {
 					c.Duration -= time.Hour * 24
 				}
 				// case strings.Contains(lower, "last night"):

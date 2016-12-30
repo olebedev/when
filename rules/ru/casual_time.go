@@ -10,15 +10,13 @@ import (
 )
 
 func CasualTime(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.OverWrite
-
 	return &rules.F{
 		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((это|этим|этот|этим|до|к|после)?\s*(утром?|вечер(?:у|ом)|обеда?))`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
 
-			if c.Hour != nil && !overwrite {
+			if c.Hour != nil && s == rules.OverWrite {
 				return false, nil
 			}
 
