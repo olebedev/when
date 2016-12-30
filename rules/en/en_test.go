@@ -27,3 +27,19 @@ func ApplyFixtures(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
 		require.Equal(t, f.Diff, res.Time.Sub(null), "[%s] diff #%d", name, i)
 	}
 }
+
+func ApplyFixturesNil(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
+	for i, f := range fixt {
+		res, err := w.Parse(f.Text, null)
+		require.Nil(t, err, "[%s] err #%d", name, i)
+		require.Nil(t, res, "[%s] res #%d", name, i)
+	}
+}
+
+func ApplyFixturesErr(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
+	for i, f := range fixt {
+		_, err := w.Parse(f.Text, null)
+		require.NotNil(t, err, "[%s] err #%d", name, i)
+		require.Equal(t, f.Phrase, err.Error(), "[%s] err text #%d", name, i)
+	}
+}
