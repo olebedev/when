@@ -23,30 +23,30 @@ func TestCasualDate(t *testing.T) {
 	ApplyFixtures(t, "ru.CasualDate", w, fixt)
 }
 
-// func TestCasualTime(t *testing.T) {
-// 	fixt := []Fixture{
-// 		{"The Deadline was this morning ", 17, "this morning", 8 * time.Hour},
-// 		{"The Deadline was this noon ", 17, "this noon", 12 * time.Hour},
-// 		{"The Deadline was this afternoon ", 17, "this afternoon", 15 * time.Hour},
-// 		{"The Deadline was this evening ", 17, "this evening", 18 * time.Hour},
-// 	}
-//
-// 	w := when.New(nil)
-// 	w.Add(en.CasualTime(rules.Skip))
-//
-// 	ApplyFixtures(t, "en.CasualTime", w, fixt)
-// }
-//
-// func TestCasualDateCasualTime(t *testing.T) {
-// 	fixt := []Fixture{
-// 		{"Это нужно сделать tomorrow this afternoon ", 16, "tomorrow this afternoon", (15 + 24) * time.Hour},
-// 	}
-//
-// 	w := when.New(nil)
-// 	w.Add(
-// 		en.CasualDate(rules.Skip),
-// 		en.CasualTime(rules.OverWrite),
-// 	)
-//
-// 	ApplyFixtures(t, "en.CasualDate|en.CasualTime", w, fixt)
-// }
+func TestCasualTime(t *testing.T) {
+	fixt := []Fixture{
+		{"Это нужно сделать этим утром ", 33, "этим утром", 8 * time.Hour},
+		{"Это нужно сделать до обеда", 33, "до обеда", 12 * time.Hour},
+		{"Это нужно сделать после обеда", 33, "после обеда", 15 * time.Hour},
+		{"Это нужно сделать к вечеру", 33, "к вечеру", 18 * time.Hour},
+	}
+
+	w := when.New(nil)
+	w.Add(ru.CasualTime(rules.Skip))
+
+	ApplyFixtures(t, "ru.CasualTime", w, fixt)
+}
+
+func TestCasualDateCasualTime(t *testing.T) {
+	fixt := []Fixture{
+		{"Это нужно сделать завтра после обеда", 33, "завтра после обеда", (15 + 24) * time.Hour},
+	}
+
+	w := when.New(nil)
+	w.Add(
+		ru.CasualDate(rules.Skip),
+		ru.CasualTime(rules.OverWrite),
+	)
+
+	ApplyFixtures(t, "ru.CasualDate|ru.CasualTime", w, fixt)
+}
