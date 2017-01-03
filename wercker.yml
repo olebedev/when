@@ -1,0 +1,15 @@
+box: golang
+build:
+  steps:
+    - setup-go-workspace
+    - script:
+        name: go get
+        code: |
+          go version
+          go get ./...
+          go get github.com/AlekSi/pointer
+          go get github.com/stretchr/testify/...
+    - script:
+        name: go test
+        code: |
+          go test -v ./rules/en ./rules/ru
