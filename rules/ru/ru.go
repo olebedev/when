@@ -3,12 +3,12 @@ package ru
 import "github.com/olebedev/when/rules"
 
 var All = []rules.Rule{
-// Weekday(rules.OverWrite),
-// CasualDate(rules.OverWrite),
-// CasualTime(rules.OverWrite),
-// Deadline(rules.OverWrite),
-// Hour(rules.OverWrite),
-// HourMinute(rules.OverWrite),
+	// Weekday(rules.OverWrite),
+	CasualDate(rules.OverWrite),
+	CasualTime(rules.OverWrite),
+	Deadline(rules.OverWrite),
+	Hour(rules.OverWrite),
+	// HourMinute(rules.OverWrite),
 }
 
 var WEEKDAY_OFFSET = map[string]int{
@@ -31,8 +31,10 @@ var WEEKDAY_OFFSET = map[string]int{
 var WEEKDAY_OFFSET_PATTERN = "(?:воскресенье|воск|понедельник|пн|вторник|вт|среда|ср|четверг|чт|пятница|пт|суббота|сб)"
 
 var INTEGER_WORDS = map[string]int{
+	"час":         1,
 	"один":        1,
 	"одну":        1,
+	"одного":      1,
 	"два":         2,
 	"две":         2,
 	"три":         3,
@@ -47,4 +49,4 @@ var INTEGER_WORDS = map[string]int{
 	"двенадцать":  12,
 }
 
-var INTEGER_WORDS_PATTERN = `(?:один|одну|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|одиннадцать|двенадцать)`
+var INTEGER_WORDS_PATTERN = `(?:час|один|одну|одного|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|одиннадцать|двенадцать)`
