@@ -1,4 +1,4 @@
-package en
+package ru
 
 import (
 	"regexp"
@@ -22,7 +22,7 @@ import (
 	{"11.1pm", 0, "11.1pm", 0},
 	{"11.10 pm", 0, "11.10 pm", 0},
 
-	https://play.golang.org/p/hXl7C8MWNr
+	https://play.golang.org/p/idqvYs5ihJ
 */
 
 // 1. - int
@@ -33,9 +33,9 @@ func HourMinute(s rules.Strategy) rules.Rule {
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
 			"((?:[0-1]{0,1}[0-9])|(?:2[0-3]))" +
-			"(?:\\:|：|\\-)" +
+			"(?:\\:|：|\\-|\\.)" +
 			"((?:[0-5][0-9]))" +
-			"(?:\\s*(A\\.|P\\.|A\\.M\\.|P\\.M\\.|AM?|PM?)+)?" +
+			"(?:\\s*(утра|вечера|дня))?" +
 			"(?:\\W|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if (c.Hour != nil || c.Minute != nil) && s != rules.OverWrite {
@@ -52,28 +52,22 @@ func HourMinute(s rules.Strategy) rules.Rule {
 				return false, errors.Wrap(err, "hour minute rule")
 			}
 
-			if minutes > 59 {
-				return false, nil
-			}
 			c.Minute = &minutes
 
 			if m.Captures[2] != "" {
 				if hour > 12 {
 					return false, nil
 				}
-				switch m.Captures[2][0] {
-				case 65, 97: // am
+				switch m.Captures[2] {
+				case "утра": // am
 					c.Hour = &hour
-				case 80, 112: // pm
+				case "вечера", "дня": // pm
 					if hour < 12 {
 						hour += 12
 					}
 					c.Hour = &hour
 				}
 			} else {
-				if hour > 23 {
-					return false, nil
-				}
 				c.Hour = &hour
 			}
 
