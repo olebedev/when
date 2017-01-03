@@ -19,7 +19,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 			"(?:(эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
 			"(" + WEEKDAY_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*на\\s*(этой|прошлой|следующей)\\s*неделе)?" +
-			"(?:\\W|$)",
+			"(?:\\s|,|\\.|$)",
 		),
 
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {

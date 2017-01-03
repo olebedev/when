@@ -37,3 +37,15 @@ func TestWeekday(t *testing.T) {
 
 	ApplyFixtures(t, "ru.Weekday", w, fixt)
 }
+
+func TestWeekdayNil(t *testing.T) {
+	fixt := []Fixture{
+		{"завтра", 0, "", 0},
+	}
+
+	w := when.New(nil)
+
+	w.Add(ru.Weekday(rules.OverWrite))
+
+	ApplyFixturesNil(t, "ru.Weekday nil", w, fixt)
+}

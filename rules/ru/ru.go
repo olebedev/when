@@ -3,12 +3,12 @@ package ru
 import "github.com/olebedev/when/rules"
 
 var All = []rules.Rule{
-	// Weekday(rules.OverWrite),
+	Weekday(rules.OverWrite),
 	CasualDate(rules.OverWrite),
 	CasualTime(rules.OverWrite),
 	Deadline(rules.OverWrite),
 	Hour(rules.OverWrite),
-	// HourMinute(rules.OverWrite),
+	HourMinute(rules.OverWrite),
 }
 
 var WEEKDAY_OFFSET = map[string]int{

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
-	"github.com/olebedev/when/rules/en"
+	"github.com/olebedev/when/rules/ru"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,18 +47,19 @@ func ApplyFixturesErr(t *testing.T, name string, w *when.Parser, fixt []Fixture)
 
 func TestAll(t *testing.T) {
 	w := when.New(nil)
-	w.Add(en.All...)
+	w.Add(ru.All...)
 
 	// complex cases
 	fixt := []Fixture{
-	// {"tonight at 11.10 pm", 0, "tonight at 11.10 pm", (23 * time.Hour) + (10 * time.Minute)},
-	// {"tonight next Monday", 0, "tonight next Monday", ((5 * 24) + 23) * time.Hour},
-	// {"next Monday tonight", 0, "next Monday tonight", ((5 * 24) + 23) * time.Hour},
-	// {"at Friday afternoon", 3, "Friday afternoon", ((2 * 24) + 15) * time.Hour},
-	// {"in next tuesday at 14:00", 3, "next tuesday at 14:00", ((6 * 24) + 14) * time.Hour},
-	// {"in next tuesday at 2p", 3, "next tuesday at 2p", ((6 * 24) + 14) * time.Hour},
-	// {"in next wednesday at 2:25 p.m.", 3, "next wednesday at 2:25 p.m.", (((7 * 24) + 14) * time.Hour) + (25 * time.Minute)},
-	// {"at 11 am past tuesday", 3, "11 am past tuesday", -13 * time.Hour},
+		{"завтра в 11:10 вечера", 0, "завтра в 11:10 вечера", (47 * time.Hour) + (10 * time.Minute)},
+		{"вечером в следующий понедельник", 0, "вечером в следующий понедельник", ((5 * 24) + 18) * time.Hour},
+		{"вечером в прошлый понедельник", 0, "вечером в прошлый понедельник", ((-2 * 24) + 18) * time.Hour},
+		{"в следующий понедельник вечером", 3, "следующий понедельник вечером", ((5 * 24) + 18) * time.Hour},
+		{"в Пятницу после обеда", 3, "Пятницу после обеда", ((2 * 24) + 15) * time.Hour},
+		{"в следующий вторник в 14:00", 3, "следующий вторник в 14:00", ((6 * 24) + 14) * time.Hour},
+		{"в следующий вторник в четыре вечера", 3, "следующий вторник в четыре вечера", ((6 * 24) + 16) * time.Hour},
+		{"в следующую среду в 2:25 вечера", 3, "следующую среду в 2:25 вечера", (((7 * 24) + 14) * time.Hour) + (25 * time.Minute)},
+		{"в 11 утра в прошлый вторник", 3, "11 утра в прошлый вторник", -13 * time.Hour},
 	}
 
 	ApplyFixtures(t, "ru.All...", w, fixt)
