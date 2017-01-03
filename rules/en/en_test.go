@@ -52,8 +52,6 @@ func TestAll(t *testing.T) {
 	// complex cases
 	fixt := []Fixture{
 		{"tonight at 11:10 pm", 0, "tonight at 11:10 pm", (23 * time.Hour) + (10 * time.Minute)},
-		{"tonight next Monday", 0, "tonight next Monday", ((5 * 24) + 23) * time.Hour},
-		{"next Monday tonight", 0, "next Monday tonight", ((5 * 24) + 23) * time.Hour},
 		{"at Friday afternoon", 3, "Friday afternoon", ((2 * 24) + 15) * time.Hour},
 		{"in next tuesday at 14:00", 3, "next tuesday at 14:00", ((6 * 24) + 14) * time.Hour},
 		{"in next tuesday at 2p", 3, "next tuesday at 2p", ((6 * 24) + 14) * time.Hour},
