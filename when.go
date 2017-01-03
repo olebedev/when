@@ -5,6 +5,9 @@ import (
 	"time"
 
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/common"
+	"github.com/olebedev/when/rules/en"
+	"github.com/olebedev/when/rules/ru"
 	"github.com/pkg/errors"
 )
 
@@ -138,4 +141,20 @@ func New(o *rules.Options) *Parser {
 var defaultOptions = &rules.Options{
 	Distance:     5,
 	MatchByOrder: true,
+}
+
+// EN is a parser for English language
+var EN *Parser
+
+// RU is a parser for Russian language
+var RU *Parser
+
+func init() {
+	EN = New(nil)
+	EN.Add(en.All...)
+	EN.Add(common.All...)
+
+	RU = New(nil)
+	RU.Add(ru.All...)
+	RU.Add(common.All...)
 }
