@@ -16,7 +16,7 @@ func CasualTime(s rules.Strategy) rules.Rule {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
 
-			if c.Hour != nil && s == rules.OverWrite {
+			if (c.Hour != nil || c.Minute != nil) && s == rules.OverWrite {
 				return false, nil
 			}
 
@@ -27,24 +27,28 @@ func CasualTime(s rules.Strategy) rules.Rule {
 				} else {
 					c.Hour = pointer.ToInt(15)
 				}
+				c.Minute = pointer.ToInt(0)
 			case strings.Contains(lower, "вечер"):
 				if o.Everning != 0 {
 					c.Hour = &o.Everning
 				} else {
 					c.Hour = pointer.ToInt(18)
 				}
+				c.Minute = pointer.ToInt(0)
 			case strings.Contains(lower, "утро"):
 				if o.Morning != 0 {
 					c.Hour = &o.Morning
 				} else {
 					c.Hour = pointer.ToInt(8)
 				}
+				c.Minute = pointer.ToInt(0)
 			case strings.Contains(lower, "обед"):
 				if o.Noon != 0 {
 					c.Hour = &o.Noon
 				} else {
 					c.Hour = pointer.ToInt(12)
 				}
+				c.Minute = pointer.ToInt(0)
 			}
 
 			return true, nil
