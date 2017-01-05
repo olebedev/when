@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AlekSi/pointer"
 	"github.com/olebedev/when/rules"
 )
 
@@ -20,10 +19,11 @@ func CasualDate(s rules.Strategy) rules.Rule {
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
 
 			switch {
-			case strings.Contains(lower, "вечер"):
-				if c.Hour == nil || s == rules.OverWrite {
-					c.Hour = pointer.ToInt(23)
-				}
+			// case strings.Contains(lower, "вечер"):
+			// 	if c.Hour == nil || s == rules.OverWrite {
+			// 		c.Hour = pointer.ToInt(23)
+			// 		c.Minute = pointer.ToInt(0)
+			// 	}
 			case strings.Contains(lower, "сегодня"):
 				// c.Hour = pointer.ToInt(18)
 			case strings.Contains(lower, "завтра"):

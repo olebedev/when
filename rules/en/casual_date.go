@@ -19,8 +19,9 @@ func CasualDate(s rules.Strategy) rules.Rule {
 
 			switch {
 			case strings.Contains(lower, "tonight"):
-				if c.Hour == nil || overwrite {
+				if c.Hour == nil && c.Minute == nil || overwrite {
 					c.Hour = pointer.ToInt(23)
+					c.Minute = pointer.ToInt(0)
 				}
 			case strings.Contains(lower, "today"):
 				// c.Hour = pointer.ToInt(18)
