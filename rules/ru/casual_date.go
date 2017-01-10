@@ -8,11 +8,12 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-// https://play.golang.org/p/D19wPQBraq
+// https://play.golang.org/p/QrFtjmjUoJ
 
 func CasualDate(s rules.Strategy) rules.Rule {
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\P{L}|^)" +
+			"((?:до|прямо)\\s+)?" +
 			"(сейчас|сегодня|завтра|вчера)" +
 			"(?:\\P{L}|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
