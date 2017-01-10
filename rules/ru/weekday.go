@@ -15,8 +15,8 @@ func Weekday(s rules.Strategy) rules.Rule {
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
-			"(?:(?:на|в)\\s*?)?" +
-			"(?:(эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
+			"(?:(?:на|в|к)\\s*?)?" +
+			"(?:(во|ко|до|эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
 			"(" + WEEKDAY_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*на\\s*(этой|прошлой|следующей)\\s*неделе)?" +
 			"(?:\\s|,|\\.|$)",
@@ -55,7 +55,10 @@ func Weekday(s rules.Strategy) rules.Rule {
 				} else {
 					c.Duration = -(7 * 24 * time.Hour)
 				}
-			case strings.Contains(norm, "следующ"):
+			case strings.Contains(norm, "следующ"),
+				strings.Contains(norm, "во"),
+				strings.Contains(norm, "ко"),
+				strings.Contains(norm, "до"):
 				diff := dayInt - int(ref.Weekday())
 				if diff > 0 {
 					c.Duration = time.Duration(diff*24) * time.Hour

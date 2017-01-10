@@ -11,7 +11,7 @@ import (
 
 func CasualTime(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((это|этим|этот|этим|до|к|после)?\s*(утром?|вечер(?:у|ом)|обеда?))`),
+		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((это|этим|этот|этим|до|к|после)?\s*(утр(?:ом|а|у)|вечер(?:у|ом|а)|обеда?))`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
@@ -35,7 +35,7 @@ func CasualTime(s rules.Strategy) rules.Rule {
 					c.Hour = pointer.ToInt(18)
 				}
 				c.Minute = pointer.ToInt(0)
-			case strings.Contains(lower, "утро"):
+			case strings.Contains(lower, "утр"):
 				if o.Morning != 0 {
 					c.Hour = &o.Morning
 				} else {
