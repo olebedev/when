@@ -15,11 +15,11 @@ import (
 
 func Deadline(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
+		RegExp: regexp.MustCompile("(?i)(?:\\P{L}|^)" +
 			"(в\\sтечении|за|через)\\s*" +
 			"(" + INTEGER_WORDS_PATTERN + "|[0-9]+|полу?|несколько|нескольких)?\\s*" +
 			"(секунд(?:у|ы)?|минут(?:у|ы)?|час(?:а|ов)?|день|дня|дней|недел(?:я|ь|и|ю)|месяц(?:а|ев)?|год(?:а)?|лет)\\s*" +
-			"(?:\\W|$)"),
+			"(?:\\P{L}|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if c.Duration != 0 && s != rules.OverWrite {
 				return false, nil

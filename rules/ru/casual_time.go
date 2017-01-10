@@ -9,9 +9,11 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
+// https://play.golang.org/p/IUbYhm7Nu-
+
 func CasualTime(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile(`(?i)(?:\W|^)((это|этим|этот|этим|до|к|после)?\s*(утр(?:ом|а|у)|вечер(?:у|ом|а)|обеда?))`),
+		RegExp: regexp.MustCompile(`(?i)(?:\P{L}|^)((это|этим|этот|этим|до|к|после)?\s*(утр(?:ом|а|у)|вечер(?:у|ом|а)|обеда?))(?:\P{L}|$)`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))

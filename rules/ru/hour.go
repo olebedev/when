@@ -17,7 +17,7 @@ import (
 	"5A."
 	"5P."
 	"11 P.M."
-	https://play.golang.org/p/taykZ5_jvB
+	https://play.golang.org/p/w2PeQ3l_rp
 */
 
 func Hour(s rules.Strategy) rules.Rule {
@@ -25,7 +25,7 @@ func Hour(s rules.Strategy) rules.Rule {
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
 			"(" + INTEGER_WORDS_PATTERN + "|\\d{1,2})" +
 			"(?:\\s*час(?:а|ов|ам)?)?(?:\\s*(утра|вечера|дня))" +
-			"(?:\\W|$)"),
+			"(?:\\P{L}|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if c.Hour != nil && s != rules.OverWrite {
 				return false, nil

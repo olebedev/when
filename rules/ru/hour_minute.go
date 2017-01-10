@@ -22,7 +22,7 @@ import (
 	{"11.1pm", 0, "11.1pm", 0},
 	{"11.10 pm", 0, "11.10 pm", 0},
 
-	https://play.golang.org/p/idqvYs5ihJ
+	https://play.golang.org/p/PmPBjHK4PA
 */
 
 // 1. - int
@@ -31,12 +31,12 @@ import (
 
 func HourMinute(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
+		RegExp: regexp.MustCompile("(?i)(?:\\W|\\D|^)" +
 			"((?:[0-1]{0,1}[0-9])|(?:2[0-3]))" +
 			"(?:\\:|：|\\-|\\.)" +
 			"((?:[0-5][0-9]))" +
 			"(?:\\s*(утра|вечера|дня))?" +
-			"(?:\\W|$)"),
+			"(?:\\P{L}|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if (c.Hour != nil || c.Minute != nil) && s != rules.OverWrite {
 				return false, nil

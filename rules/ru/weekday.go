@@ -8,19 +8,18 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-// https://play.golang.org/p/nfol9DhyH0
+// https://play.golang.org/p/8qu-qk6KzP
 
 func Weekday(s rules.Strategy) rules.Rule {
 	overwrite := s == rules.OverWrite
 
 	return &rules.F{
-		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
-			"(?:(?:на|в|к)\\s*?)?" +
+		RegExp: regexp.MustCompile("(?i)(?:\\P{L}|^)" +
+			"(?:(?:на|в)\\s*?)?" +
 			"(?:(во|ко|до|эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
 			"(" + WEEKDAY_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*на\\s*(этой|прошлой|следующей)\\s*неделе)?" +
-			"(?:\\s|,|\\.|$)",
-		),
+			"(?:\\P{L}|$)"),
 
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			_ = overwrite
