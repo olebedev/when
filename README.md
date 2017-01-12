@@ -24,7 +24,7 @@ in next wednesday at 2:25 p.m.
 
 So, we have a cluster of matched rules - `"next wednesday at 2:25 p.m."` in the string representation. 
 
-After that, each rule is being applied to the context. In order of definition or in match order, if [`options.MatchByOrder`](https://github.com/olebedev/when/blob/master/when.go#L141-L144) set in `true`(by default). Each rule could be applied with given merge strategy. By default, it's an [Overide](https://github.com/olebedev/when/blob/master/rules/rules.go#L13) strategy. The other strategies are not implemented yet in the rules. **Pull requests are welcome any time.**
+After that, each rule is being applied to the context. In order of definition or in match order, if [`options.MatchByOrder`](https://github.com/olebedev/when/blob/master/when.go#L141-L144) set in `true`(by default). Each rule could be applied with given merge strategy. By default, it's an [Override](https://github.com/olebedev/when/blob/master/rules/rules.go#L13) strategy. The other strategies are not implemented yet in the rules. **Pull requests are welcome any time.**
 
 ### Usage
 
