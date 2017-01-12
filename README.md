@@ -33,7 +33,7 @@ w := when.New(nil)
 w.Add(en.All...)
 w.Add(common.All...)
 
-text := "where is the what if the what is in why?"
+text := "drop me a line in next wednesday at 2:25 p.m"
 r, err := w.Parse(text, time.Now())
 if err != nil {
 	// an error has occurred
