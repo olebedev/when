@@ -8,21 +8,17 @@ import (
 	"github.com/olebedev/when/rules"
 )
 
-// https://play.golang.org/p/8qu-qk6KzP
+// https://play.golang.org/p/aRWlil_64M
 
 func Weekday(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.Override
-
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\P{L}|^)" +
-			"(?:(?:на|в)\\s*?)?" +
-			"(?:(во|ко|до|эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
+			"(?:(на|во?|ко?|до|эт(?:от|ой|у|а)?|прошл(?:ую|ый|ая)|последн(?:юю|ий|ее|ая)|следующ(?:ую|ее|ая|ий))\\s*)?" +
 			"(" + WEEKDAY_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*на\\s*(этой|прошлой|следующей)\\s*неделе)?" +
 			"(?:\\P{L}|$)"),
 
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			_ = overwrite
 
 			day := strings.ToLower(strings.TrimSpace(m.Captures[1]))
 			norm := m.Captures[2]
@@ -39,7 +35,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
-			if c.Duration != 0 && !overwrite {
+			if c.Duration != 0 && s != rules.Override {
 				return false, nil
 			}
 
@@ -55,6 +51,8 @@ func Weekday(s rules.Strategy) rules.Rule {
 					c.Duration = -(7 * 24 * time.Hour)
 				}
 			case strings.Contains(norm, "следующ"),
+				norm == "в",
+				norm == "к",
 				strings.Contains(norm, "во"),
 				strings.Contains(norm, "ко"),
 				strings.Contains(norm, "до"):
