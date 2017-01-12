@@ -29,7 +29,7 @@ func Hour(s rules.Strategy) rules.Rule {
 			"(?:\\s*(A\\.|P\\.|A\\.M\\.|P\\.M\\.|AM?|PM?))" +
 			"(?:\\W|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			if c.Hour != nil && s != rules.OverWrite {
+			if c.Hour != nil && s != rules.Override {
 				return false, nil
 			}
 

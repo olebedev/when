@@ -46,7 +46,7 @@ func TestCasualDateCasualTime(t *testing.T) {
 	w := when.New(nil)
 	w.Add(
 		en.CasualDate(rules.Skip),
-		en.CasualTime(rules.OverWrite),
+		en.CasualTime(rules.Override),
 	)
 
 	ApplyFixtures(t, "en.CasualDate|en.CasualTime", w, fixt)

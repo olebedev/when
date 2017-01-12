@@ -43,7 +43,7 @@ func SlashDMY(s rules.Strategy) rules.Rule {
 			"((?:1|2)[0-9]{3})\\s*)?" +
 			"(?:\\W|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			if (c.Day != nil || c.Month != nil || c.Year != nil) && s != rules.OverWrite {
+			if (c.Day != nil || c.Month != nil || c.Year != nil) && s != rules.Override {
 				return false, nil
 			}
 

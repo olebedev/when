@@ -10,7 +10,7 @@ import (
 )
 
 func CasualDate(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.OverWrite
+	overwrite := s == rules.Override
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)(now|today|tonight|last\\s*night|(?:tomorrow|tmr|yesterday)\\s*|tomorrow|tmr|yesterday)(?:\\W|$)"),

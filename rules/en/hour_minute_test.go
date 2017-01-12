@@ -11,7 +11,7 @@ import (
 
 func TestHourMinute(t *testing.T) {
 	w := when.New(nil)
-	w.Add(en.HourMinute(rules.OverWrite))
+	w.Add(en.HourMinute(rules.Override))
 
 	fixtok := []Fixture{
 		{"5:30pm", 0, "5:30pm", (17 * time.Hour) + (30 * time.Minute)},
@@ -37,8 +37,8 @@ func TestHourMinute(t *testing.T) {
 
 	w = when.New(nil)
 	w.Add(
-		en.Hour(rules.OverWrite),
-		en.HourMinute(rules.OverWrite),
+		en.Hour(rules.Override),
+		en.HourMinute(rules.Override),
 	)
 
 	ApplyFixtures(t, "en.Hour|en.HourMinute", w, fixtok)

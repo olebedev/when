@@ -21,7 +21,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 			"(секунд(?:у|ы)?|минут(?:у|ы)?|час(?:а|ов)?|день|дня|дней|недел(?:я|ь|и|ю)|месяц(?:а|ев)?|год(?:а)?|лет)\\s*" +
 			"(?:\\P{L}|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			if c.Duration != 0 && s != rules.OverWrite {
+			if c.Duration != 0 && s != rules.Override {
 				return false, nil
 			}
 

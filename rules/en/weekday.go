@@ -9,7 +9,7 @@ import (
 )
 
 func Weekday(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.OverWrite
+	overwrite := s == rules.Override
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)" +

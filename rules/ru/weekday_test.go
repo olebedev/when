@@ -34,7 +34,7 @@ func TestWeekday(t *testing.T) {
 
 	w := when.New(nil)
 
-	w.Add(ru.Weekday(rules.OverWrite))
+	w.Add(ru.Weekday(rules.Override))
 
 	ApplyFixtures(t, "ru.Weekday", w, fixt)
 }
@@ -46,7 +46,7 @@ func TestWeekdayNil(t *testing.T) {
 
 	w := when.New(nil)
 
-	w.Add(ru.Weekday(rules.OverWrite))
+	w.Add(ru.Weekday(rules.Override))
 
 	ApplyFixturesNil(t, "ru.Weekday nil", w, fixt)
 }

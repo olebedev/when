@@ -10,7 +10,7 @@ type Strategy int
 const (
 	Skip Strategy = iota
 	Merge
-	OverWrite
+	Override
 )
 
 type Rule interface {

@@ -21,7 +21,7 @@ func TestHour(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(ru.Hour(rules.OverWrite))
+	w.Add(ru.Hour(rules.Override))
 
 	ApplyFixtures(t, "en.Hour", w, fixt)
 }

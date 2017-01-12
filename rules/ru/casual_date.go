@@ -23,11 +23,11 @@ func CasualDate(s rules.Strategy) rules.Rule {
 			case strings.Contains(lower, "сегодня"):
 				// c.Hour = pointer.ToInt(18)
 			case strings.Contains(lower, "завтра"):
-				if c.Duration == 0 || s == rules.OverWrite {
+				if c.Duration == 0 || s == rules.Override {
 					c.Duration += time.Hour * 24
 				}
 			case strings.Contains(lower, "вчера"):
-				if c.Duration == 0 || s == rules.OverWrite {
+				if c.Duration == 0 || s == rules.Override {
 					c.Duration -= time.Hour * 24
 				}
 			}

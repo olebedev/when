@@ -18,7 +18,7 @@ func CasualTime(s rules.Strategy) rules.Rule {
 
 			lower := strings.ToLower(strings.TrimSpace(m.String()))
 
-			if (c.Hour != nil || c.Minute != nil) && s == rules.OverWrite {
+			if (c.Hour != nil || c.Minute != nil) && s == rules.Override {
 				return false, nil
 			}
 

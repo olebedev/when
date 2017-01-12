@@ -11,7 +11,7 @@ import (
 // https://play.golang.org/p/8qu-qk6KzP
 
 func Weekday(s rules.Strategy) rules.Rule {
-	overwrite := s == rules.OverWrite
+	overwrite := s == rules.Override
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\P{L}|^)" +
