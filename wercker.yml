@@ -12,4 +12,4 @@ build:
     - script:
         name: go test
         code: |
-          go test -v ./rules/en ./rules/ru
+          go test -v ./rules/en ./rules/ru ./rules/common
