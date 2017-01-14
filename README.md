@@ -60,7 +60,7 @@ The project is in a more-or-less complete state. It used for one project already
 ### TODO
 
 - [ ] readme: describe all the existing rules
-- [ ] implement rules for all [these examples](https://github.com/mojombo/chronic#examples)
+- [ ] implement missed rules for [these examples](https://github.com/mojombo/chronic#examples)
 - [ ] add cli and simple rest api server([#2](https://github.com/olebedev/when/issues/2))
 
 ### LICENSE
