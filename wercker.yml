@@ -6,9 +6,8 @@ build:
         name: go get
         code: |
           go version
-          go get ./...
-          go get github.com/AlekSi/pointer
-          go get github.com/stretchr/testify/...
+          go get github.com/Masterminds/glide
+          glide install
     - script:
         name: go test
         code: |
