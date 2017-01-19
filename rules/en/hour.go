@@ -42,6 +42,7 @@ func Hour(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
+			zero := 0
 			switch m.Captures[1][0] {
 			case 65, 97: // am
 				c.Hour = &hour
@@ -52,6 +53,7 @@ func Hour(s rules.Strategy) rules.Rule {
 				c.Hour = &hour
 			}
 
+			c.Minute = &zero
 			return true, nil
 		},
 	}

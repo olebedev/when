@@ -6,9 +6,9 @@ var All = []rules.Rule{
 	Weekday(rules.Override),
 	CasualDate(rules.Override),
 	CasualTime(rules.Override),
-	Deadline(rules.Override),
 	Hour(rules.Override),
 	HourMinute(rules.Override),
+	Deadline(rules.Override),
 }
 
 var WEEKDAY_OFFSET = map[string]int{
