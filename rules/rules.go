@@ -18,7 +18,7 @@ type Rule interface {
 }
 
 type Options struct {
-	Afternoon, Everning, Morning, Noon int
+	Afternoon, Evening, Morning, Noon int
 
 	Distance int
 

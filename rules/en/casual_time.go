@@ -31,8 +31,8 @@ func CasualTime(s rules.Strategy) rules.Rule {
 				}
 				c.Minute = pointer.ToInt(0)
 			case strings.Contains(lower, "evening"):
-				if o.Everning != 0 {
-					c.Hour = &o.Everning
+				if o.Evening != 0 {
+					c.Hour = &o.Evening
 				} else {
 					c.Hour = pointer.ToInt(18)
 				}
