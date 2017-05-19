@@ -49,7 +49,7 @@ fmt.Println(
 	"the time",
 	r.Time.String(),
 	"mentioned in",
-	text[r.Index:len(r.Text)],
+	text[r.Index:r.Index+len(r.Text)],
 )
 ```
 
