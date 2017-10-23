@@ -22,7 +22,7 @@ Usually, there are several rules added to the parser's instance for checking. Ea
 ```
 on next wednesday at 2:25 p.m.
    └──────┬─────┘    └───┬───┘
-   	   weekday      hour + minute
+       weekday      hour + minute
 ```
 
 So, we have a cluster of matched rules - `"next wednesday at 2:25 p.m."` in the string representation. 
