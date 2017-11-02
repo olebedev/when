@@ -92,7 +92,7 @@ func (p *Parser) Parse(text string, base time.Time) (*Result, error) {
 		sort.Sort(rules.MatchByOrder(matches))
 	}
 
-	ctx := &rules.Context{Text: res.Text}
+	ctx := &rules.Context{Text: res.Text, Source: res.Source}
 	applied := false
 	for _, applier := range matches {
 		ok, err := applier.Apply(ctx, p.options, res.Time)
