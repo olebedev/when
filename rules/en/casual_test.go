@@ -1,12 +1,14 @@
 package en_test
 
 import (
+	"github.com/demisto/when/rules/common"
 	"testing"
 	"time"
 
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCasualDate(t *testing.T) {
@@ -22,6 +24,42 @@ func TestCasualDate(t *testing.T) {
 	w.Add(en.CasualDate(rules.Skip))
 
 	ApplyFixtures(t, "en.CasualDate", w, fixt)
+}
+
+func TestTodayTomorrowYesterday(t *testing.T) {
+	var w = when.New(nil)
+	w.Add(en.All...)
+	w.Add(common.All...)
+	now := time.Now()
+	r, err := w.Parse("today", now)
+	assert.EqualValues(t, now.Year(), r.Time.Year())
+	assert.EqualValues(t, now.Month(), r.Time.Month())
+	assert.EqualValues(t, now.Day(), r.Time.Day())
+	assert.EqualValues(t, 0, r.Time.Minute())
+	assert.EqualValues(t, 0, r.Time.Hour())
+	assert.EqualValues(t, 0, r.Time.Second())
+	r, err = w.Parse("yesterday", now)
+	if err != nil {
+		t.Fail()
+	}
+	assert.EqualValues(t, now.Year(), r.Time.Year())
+	assert.EqualValues(t, now.Month(), r.Time.Month())
+	assert.EqualValues(t, now.Day()-1, r.Time.Day())
+	assert.EqualValues(t, 0, r.Time.Minute())
+	assert.EqualValues(t, 0, r.Time.Hour())
+	assert.EqualValues(t, 0, r.Time.Second())
+
+	r, err = w.Parse("tomorrow", now)
+	if err != nil {
+		t.Fail()
+	}
+	assert.EqualValues(t, now.Year(), r.Time.Year())
+	assert.EqualValues(t, now.Month(), r.Time.Month())
+	assert.EqualValues(t, now.Day()+1, r.Time.Day())
+	assert.EqualValues(t, 0, r.Time.Minute())
+	assert.EqualValues(t, 0, r.Time.Hour())
+	assert.EqualValues(t, 0, r.Time.Second())
+
 }
 
 func TestCasualTime(t *testing.T) {
