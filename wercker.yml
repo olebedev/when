@@ -6,10 +6,8 @@ build:
         name: go get
         code: |
           go version
-          go get -u -v github.com/golang/dep
-          go get -u -v github.com/golang/dep/cmd/dep
-          dep ensure
+          go get -v -t -d ./...
     - script:
         name: go test
         code: |
-          go test -v ./rules/en ./rules/ru ./rules/common
+          go test -v ./...
