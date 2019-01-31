@@ -6,6 +6,7 @@ build:
         name: go get
         code: |
           go version
+          go get -v -t -d ./...
     - script:
         name: go test
         code: |
