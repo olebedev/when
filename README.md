@@ -10,7 +10,7 @@
 * drop me a line **next wednesday at 2:25 p.m**
 * it could be done at **11 am past tuesday**
 
-Check [EN](https://github.com/olebedev/when/blob/master/rules/en) and [RU](https://github.com/olebedev/when/blob/master/rules/ru) rules and tests for them, for more examples.
+Check [EN](https://github.com/olebedev/when/blob/master/rules/en), [RU](https://github.com/olebedev/when/blob/master/rules/ru) and [BR](https://github.com/olebedev/when/blob/master/rules/br) rules and tests for them, for more examples.
 
 **Needed rule not found?**
 Open [an issue](https://github.com/olebedev/when/issues/new) with the case and it will be added asap.
@@ -51,6 +51,38 @@ fmt.Println(
 	"mentioned in",
 	text[r.Index:r.Index+len(r.Text)],
 )
+```
+
+#### Distance Option
+
+```go
+w := when.New(nil)
+w.Add(en.All...)
+w.Add(common.All...)
+
+text := "February 23, 2019 | 1:46pm"
+
+// With default distance (5):
+// February 23, 2019 | 1:46pm
+//            └───┬───┘
+//           distance: 9 (1:46pm will be ignored)
+
+r, _ := w.Parse(text, time.Now())
+fmt.Printf(r.Time.String())
+// "2019-02-23 09:21:21.835182427 -0300 -03"
+// 2019-02-23 (correct)
+//   09:21:21 ("wrong")
+
+// With custom distance (10):
+w.SetOptions(&rules.Options{
+	Distance:     10,
+	MatchByOrder: true})
+
+r, _ = w.Parse(text, time.Now())
+fmt.Printf(r.Time.String())
+// "2019-02-23 13:46:21.559521554 -0300 -03"
+// 2019-02-23 (correct)
+//   13:46:21 (correct)
 ```
 
 ### State of the project
