@@ -3,6 +3,7 @@ package en
 import "github.com/olebedev/when/rules"
 
 var All = []rules.Rule{
+	SlashMDY(rules.Override),
 	Weekday(rules.Override),
 	CasualDate(rules.Override),
 	CasualTime(rules.Override),
