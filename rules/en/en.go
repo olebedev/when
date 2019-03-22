@@ -8,6 +8,7 @@ var All = []rules.Rule{
 	CasualTime(rules.Override),
 	Hour(rules.Override),
 	HourMinute(rules.Override),
+	HourMinuteSecond(rules.Override),
 	Deadline(rules.Override),
 	PastTime(rules.Override),
 	ExactMonthDate(rules.Override),
