@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 	"github.com/stretchr/testify/require"
 )
@@ -57,6 +58,29 @@ func TestAll(t *testing.T) {
 		{"in next tuesday at 2p", 3, "next tuesday at 2p", ((6 * 24) + 14) * time.Hour},
 		{"in next wednesday at 2:25 p.m.", 3, "next wednesday at 2:25 p.m.", (((7 * 24) + 14) * time.Hour) + (25 * time.Minute)},
 		{"at 11 am past tuesday", 3, "11 am past tuesday", -13 * time.Hour},
+	}
+
+	ApplyFixtures(t, "en.All...", w, fixt)
+}
+
+func TestAllMerge(t *testing.T) {
+	w := when.New(nil)
+	w.Add(
+		en.Weekday(rules.Merge),
+		en.CasualDate(rules.Merge),
+		en.CasualTime(rules.Merge),
+		en.Hour(rules.Override),
+		en.HourMinute(rules.Override),
+		en.HourMinuteSecond(rules.Override),
+		en.Deadline(rules.Override),
+		en.PastTime(rules.Merge),
+		en.ExactMonthDate(rules.Override),
+	)
+
+	// current is Friday
+	fixt := []Fixture{
+		{"this monday one week ago", 0, "this monday one week ago", -9 * 24 * time.Hour},
+		{"next monday one week ago", 0, "next monday one week ago", -2 * 24 * time.Hour},
 	}
 
 	ApplyFixtures(t, "en.All...", w, fixt)

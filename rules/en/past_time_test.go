@@ -27,7 +27,7 @@ func TestPastTime(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(en.PastTime(rules.Skip))
+	w.Add(en.PastTime(rules.Override))
 
 	ApplyFixtures(t, "en.PastTime", w, fixt)
 }
