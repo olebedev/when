@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/olebedev/when"
-	"github.com/olebedev/when/rules"
-	"github.com/olebedev/when/rules/ru"
+	"github.com/omniboost/when"
+	"github.com/omniboost/when/rules"
+	"github.com/omniboost/when/rules/ru"
 )
 
 func TestHourMinute(t *testing.T) {

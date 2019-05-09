@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 )
 
 // <[]string{"third of march", "third", "", "march", "", ""}>

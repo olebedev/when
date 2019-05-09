@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 )
 
 func Weekday(s rules.Strategy) rules.Rule {
