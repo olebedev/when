@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/AlekSi/pointer"
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 	"github.com/pkg/errors"
 )
 
 func PastTime(s rules.Strategy) rules.Rule {
 	overwrite := s == rules.Override
+	merge := s == rules.Merge
+	skip := s == rules.Skip
 
 	return &rules.F{
 		RegExp: regexp.MustCompile(
@@ -21,6 +23,9 @@ func PastTime(s rules.Strategy) rules.Rule {
 				"(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?) (ago)\\s*" +
 				"(?:\\W|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
+			if c.Duration != 0 && skip {
+				return false, nil
+			}
 
 			numStr := strings.TrimSpace(m.Captures[0])
 
@@ -44,28 +49,19 @@ func PastTime(s rules.Strategy) rules.Rule {
 
 			exponent := strings.TrimSpace(m.Captures[1])
 
+			var duration time.Duration
 			if !strings.Contains(numStr, "half") {
 				switch {
 				case strings.Contains(exponent, "second"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(time.Duration(num) * time.Second)
-					}
+					duration = -(time.Duration(num) * time.Second)
 				case strings.Contains(exponent, "min"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(time.Duration(num) * time.Minute)
-					}
+					duration = -(time.Duration(num) * time.Minute)
 				case strings.Contains(exponent, "hour"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(time.Duration(num) * time.Hour)
-					}
+					duration = -(time.Duration(num) * time.Hour)
 				case strings.Contains(exponent, "day"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(time.Duration(num) * 24 * time.Hour)
-					}
+					duration = -(time.Duration(num) * 24 * time.Hour)
 				case strings.Contains(exponent, "week"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(time.Duration(num) * 7 * 24 * time.Hour)
-					}
+					duration = -(time.Duration(num) * 7 * 24 * time.Hour)
 				case strings.Contains(exponent, "month"):
 					if c.Month == nil || overwrite {
 						c.Month = pointer.ToInt((int(ref.Month()) - num) % 12)
@@ -78,27 +74,25 @@ func PastTime(s rules.Strategy) rules.Rule {
 			} else {
 				switch {
 				case strings.Contains(exponent, "hour"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(30 * time.Minute)
-					}
+					duration = -(30 * time.Minute)
 				case strings.Contains(exponent, "day"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(12 * time.Hour)
-					}
+					duration = -(12 * time.Hour)
 				case strings.Contains(exponent, "week"):
-					if c.Duration == 0 || overwrite {
-						c.Duration = -(7 * 12 * time.Hour)
-					}
+					duration = -(7 * 12 * time.Hour)
 				case strings.Contains(exponent, "month"):
-					if c.Duration == 0 || overwrite {
-						// 2 weeks
-						c.Duration = -(14 * 24 * time.Hour)
-					}
+					// 2 weeks
+					duration = -(14 * 24 * time.Hour)
 				case strings.Contains(exponent, "year"):
 					if c.Month == nil || overwrite {
 						c.Month = pointer.ToInt((int(ref.Month()) - 6) % 12)
 					}
 				}
+			}
+
+			if overwrite {
+				c.Duration = duration
+			} else if merge {
+				c.Duration = c.Duration + duration
 			}
 
 			return true, nil

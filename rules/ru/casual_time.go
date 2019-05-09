@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/AlekSi/pointer"
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 )
 
 // https://play.golang.org/p/IUbYhm7Nu-
