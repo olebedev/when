@@ -24,10 +24,24 @@ func TestDeadline(t *testing.T) {
 		{"within a few months", 0, "within a few months", 91 * 24 * time.Hour},
 		{"within one year", 0, "within one year", 366 * 24 * time.Hour},
 		{"in a week", 0, "in a week", 7 * 24 * time.Hour},
+		{"7 days from now", 0, "7 days from now", 7 * 24 * time.Hour},
+		{"a week from now", 0, "a week from now", 7 * 24 * time.Hour},
 	}
 
 	w := when.New(nil)
 	w.Add(en.Deadline(rules.Skip))
 
 	ApplyFixtures(t, "en.Deadline", w, fixt)
+}
+
+func TestDeadlineNil(t *testing.T) {
+	fixt := []Fixture{
+		{"5 minutes", 0, "", 0},
+		{"a month", 0, "", 0},
+	}
+
+	w := when.New(nil)
+	w.Add(en.Deadline(rules.Skip))
+
+	ApplyFixturesNil(t, "en.Deadline", w, fixt)
 }
