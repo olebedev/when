@@ -1,7 +1,7 @@
 package en_test
 
 import (
-	"github.com/demisto/when/rules/common"
+	"github.com/olebedev/when/rules/common"
 	"testing"
 	"time"
 
