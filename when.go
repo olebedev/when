@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/br"
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
 	"github.com/olebedev/when/rules/ru"
-	"github.com/olebedev/when/rules/br"
 	"github.com/pkg/errors"
 )
 
