@@ -81,6 +81,7 @@ func TestVoice(t *testing.T) {
 		ru.CasualDate(rules.Override),
 		ru.CasualTime(rules.Override),
 		ru.Deadline(rules.Override),
+		ru.VoiceDeadline(rules.Override),
 		ru.VoiceHourNaked(rules.Override),
 		ru.VoiceHourMinute(rules.Override),
 	)
@@ -93,33 +94,29 @@ func TestVoice(t *testing.T) {
 		// {"в полпервого", 3, "полпервого", 30 * time.Minute},
 		{"через 30 минут", 0, "через 30 минут", 30 * time.Minute},
 		// {"в 30 минут", 3, "30 минут", 30 * time.Minute},
-		{"в 15 часов 10 минут", 3, "15 часов 10", 15*time.Hour + 10*time.Minute},
+		{"в 15 часов 10 минут", 3, "15 часов 10 минут", 15*time.Hour + 10*time.Minute},
 		{"в 15 часов", 3, "15", 15 * time.Hour},
 		{"в 3 часа", 3, "3", 3 * time.Hour},
 		{"в 3 часа 30", 3, "3 часа 30", 3*time.Hour + 30*time.Minute},
 		{"В 6 30", 3, "6 30", 6*time.Hour + 30*time.Minute},
 		{"включи свет в 7", 25, "7", 7 * time.Hour},
-		///////
+
 		{"в 7 включи свет", 3, "7", 7 * time.Hour},
-		{"в 15 часов 10 минут включи свет", 3, "15 часов 10", 15*time.Hour + 10*time.Minute},
+		{"в 15 часов 10 минут включи свет", 3, "15 часов 10 минут", 15*time.Hour + 10*time.Minute},
 		{"в 15 часов включи свет", 3, "15", 15 * time.Hour},
 		{"в 3 часа включи свет", 3, "3", 3 * time.Hour},
 		{"в 3 часа 30 включи свет", 3, "3 часа 30", 3*time.Hour + 30*time.Minute},
 		{"В 6 30 включи свет", 3, "6 30", 6*time.Hour + 30*time.Minute},
+		{"через два часа десять минут", 0, "через два часа десять минут", 2*time.Hour + 10*time.Minute},
 	}
 
-	ApplyFixtures(t, "ru.All...", w, fixt)
-}
-
-func TestNone(t *testing.T) {
-	w := when.New(nil)
-	w.Add(ru.All...)
+	ApplyFixtures(t, "Voice", w, fixt)
 
 	// complex cases
-	fixt := []Fixture{
+	fixtNone := []Fixture{
 		{"яркость на 50", 0, "", 0},
 		{"на лампе 1 увеличь яркость на 20", 0, "", 0},
 	}
 
-	ApplyFixturesNil(t, "ru.None", w, fixt)
+	ApplyFixturesNil(t, "Voice", w, fixtNone)
 }
