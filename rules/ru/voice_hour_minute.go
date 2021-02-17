@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var MINUTE_WORDS = map[string]int{
+var MINUTES_WORDS = map[string]int{
 	"минуту":       1,
 	"один":         1,
 	"одну":         1,
@@ -44,11 +44,12 @@ var MINUTE_WORDS = map[string]int{
 	"сто":          100,
 }
 
-var MINUTE_WORDS_PATTERN = `(?:` +
-	`минуту|один|одну|одного|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|` +
+var common_WORDS_PATTERN = `один|одну|одного|два|две|три|четыре|пять|шесть|семь|восемь|девять|десять|` +
 	`одиннадцать|двенадцать|тринадцать|четырнадцать|пятнадцать|шестнадцать|семнадцать|восемнадцать|девятнадцать|` +
 	`двадцать|тридцать|сорок|пятьдесят|шестьдесят|семдесят|восемдесят|девяносто|` +
-	`сто)`
+	`сто`
+
+var MINUTES_WORDS_PATTERN = `(?:минуту|` + common_WORDS_PATTERN + `)`
 
 const (
 	vhmPosHour int = iota
@@ -65,8 +66,8 @@ func VoiceHourMinute(s rules.Strategy) rules.Rule {
 			`(` + INTEGER_WORDS_PATTERN + `|\d{1,2})` + // 0
 			`[^:]` +
 			`(?:\s*час(?:а|ов|ам)?)?(?:\s*(утра|вечера|дня|ночи))?` + // 1
-			`\s*(` + MINUTE_WORDS_PATTERN + `|\d{1,2})?` + // 2
-			`(?:\s*(минут(?:у|а)?))?` + // 3
+			`\s*(` + MINUTES_WORDS_PATTERN + `|\d{1,2})?` + // 2
+			`(?:\s*(минут(?:у|а|ы)?))?` + // 3
 			`(?:\s*(\d|секунд|процент|пункт|раз))?` + // 4
 			`(?:\s*(утра|вечера|дня|ночи))?`), // 5
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
@@ -95,7 +96,7 @@ func VoiceHourMinute(s rules.Strategy) rules.Rule {
 				minuteCaptures = "0"
 				minutesEmpty = true
 			}
-			if n, ok := MINUTE_WORDS[minuteCaptures]; ok {
+			if n, ok := MINUTES_WORDS[minuteCaptures]; ok {
 				minute = n
 			} else {
 				minute, err = strconv.Atoi(minuteCaptures)
