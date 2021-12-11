@@ -75,6 +75,8 @@ func HourMinute(s rules.Strategy) rules.Rule {
 				}
 				c.Hour = &hour
 			}
+			seconds := 0 // Truncate seconds
+			c.Second = &seconds
 
 			return true, nil
 		},
