@@ -54,6 +54,7 @@ func Hour(s rules.Strategy) rules.Rule {
 			}
 
 			c.Minute = &zero
+			c.Second = &zero
 			return true, nil
 		},
 	}
