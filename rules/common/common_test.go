@@ -56,3 +56,10 @@ func TestAll(t *testing.T) {
 	fixt := []Fixture{}
 	ApplyFixtures(t, "common.All...", w, fixt)
 }
+
+func TestLeapYear(t *testing.T) {
+	require.Equal(t, common.GetDays(1999, 2), 28, "Normal year")
+	require.Equal(t, common.GetDays(2004, 2), 29, "Leap year")
+	require.Equal(t, common.GetDays(3000, 2), 28, "Century")
+	require.Equal(t, common.GetDays(2000, 2), 29, "Century divisible by 400")
+}

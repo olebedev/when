@@ -20,18 +20,6 @@ also with "\", gift for windows' users
 https://play.golang.org/p/29LkTfe1Xr
 */
 
-var MONTHS_DAYS = []int{
-	0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-}
-
-func getDays(year, month int) int {
-	// naive leap year check
-	if (year-2000)%4 == 0 && month == 2 {
-		return 29
-	}
-	return MONTHS_DAYS[month]
-}
-
 func SlashDMY(s rules.Strategy) rules.Rule {
 
 	return &rules.F{
@@ -62,26 +50,22 @@ func SlashDMY(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
+			if day > GetDays(ref.Year(), month) {
+				// invalid date: day is after last day of the month
+				return false, nil
+			}
+
 		WithYear:
 			if year != -1 {
-				if getDays(year, month) >= day {
-					c.Year = &year
-					c.Month = &month
-					c.Day = &day
-				} else {
-					return false, nil
-				}
+				c.Year = &year
+				c.Month = &month
+				c.Day = &day
 				return true, nil
 			}
 
 			if month < int(ref.Month()) {
 				year = ref.Year() + 1
 			} else if month == int(ref.Month()) {
-				if day > getDays(ref.Year(), month) {
-					// invalid date: day is after last day of the month
-					return false, nil
-				}
-
 				if day >= ref.Day() {
 					year = ref.Year()
 				} else {
