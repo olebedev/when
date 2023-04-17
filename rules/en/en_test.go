@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 	"github.com/stretchr/testify/require"
 )
@@ -60,4 +61,21 @@ func TestAll(t *testing.T) {
 	}
 
 	ApplyFixtures(t, "en.All...", w, fixt)
+}
+
+func TestAllPast(t *testing.T) {
+	w := when.New(&rules.Options{
+		Distance:     5,
+		MatchByOrder: true,
+		WantPast:     true})
+	w.Add(en.All...)
+
+	// complex cases
+	fixt := []Fixture{
+		{"at Friday afternoon", 3, "Friday afternoon", (((2 - 7) * 24) + 15) * time.Hour},
+		{"tuesday at 14:00", 0, "tuesday at 14:00", ((-1 * 24) + 14) * time.Hour},
+		{"tuesday at 2p", 0, "tuesday at 2p", ((-1 * 24) + 14) * time.Hour},
+	}
+
+	ApplyFixtures(t, "en.All... WantPast", w, fixt)
 }

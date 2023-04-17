@@ -59,7 +59,10 @@ func TestSlashDMYPast(t *testing.T) {
 		{"The Deadline is 15/07", 16, "15/07", time.Date(2016, 7, 15, 0, 0, 0, 0, time.UTC)},
 	}
 
-	w := when.New(&rules.Options{WantPast: true})
+	w := when.New(&rules.Options{
+		Distance:     5,
+		MatchByOrder: true,
+		WantPast:     true})
 	w.Add(common.SlashDMY(rules.Skip))
 
 	ApplyFixtures(t, "common.SlashDMY", w, fixt)
