@@ -35,6 +35,10 @@ func TestSlashMDY(t *testing.T) {
 		// prev day will be added to the future
 		// {"The Deadline is 07/14", 16, "07/14", (195 + 366 - OFFSET) * 24 * time.Hour},
 		{"The Deadline is 07/14", 16, "07/14", time.Date(2017, time.July, 14, 0, 0, 0, 0, time.UTC).Sub(null)},
+
+		// Current day or future months
+		{"The Deadline is 8/14", 16, "8/14", time.Date(2016, 8, 14, 0, 0, 0, 0, time.UTC).Sub(null)},
+		{"The Deadline is 7/15", 16, "7/15", time.Date(2016, 7, 15, 0, 0, 0, 0, time.UTC).Sub(null)},
 	}
 
 	w := when.New(nil)

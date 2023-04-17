@@ -60,27 +60,24 @@ func SlashMDY(s rules.Strategy) rules.Rule {
 				return true, nil
 			}
 
-			if int(ref.Month()) > month {
+			if month < int(ref.Month()) {
 				year = ref.Year() + 1
-				goto WithYear
-			}
-
-			if int(ref.Month()) == month {
-				if getDays(ref.Year(), month) >= day {
-					if day > ref.Day() {
-						year = ref.Year()
-					} else if day < ref.Day() {
-						year = ref.Year() + 1
-					} else {
-						return false, nil
-					}
-					goto WithYear
-				} else {
+			} else if month == int(ref.Month()) {
+				if day > getDays(ref.Year(), month) {
+					// invalid date: day is after last day of the month
 					return false, nil
 				}
+
+				if day >= ref.Day() {
+					year = ref.Year()
+				} else {
+					year = ref.Year() + 1
+				}
+			} else {
+				year = ref.Year()
 			}
 
-			return true, nil
+			goto WithYear
 		},
 	}
 }
