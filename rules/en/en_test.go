@@ -21,11 +21,11 @@ type Fixture struct {
 func ApplyFixtures(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
 	for i, f := range fixt {
 		res, err := w.Parse(f.Text, null)
-		require.Nil(t, err, "[%s] err #%d", name, i)
-		require.NotNil(t, res, "[%s] res #%d", name, i)
-		require.Equal(t, f.Index, res.Index, "[%s] index #%d", name, i)
-		require.Equal(t, f.Phrase, res.Text, "[%s] text #%d", name, i)
-		require.Equal(t, f.Diff, res.Time.Sub(null), "[%s] diff #%d", name, i)
+		require.Nil(t, err, "[%s] %s err #%d", name, f.Text, i)
+		require.NotNil(t, res, "[%s] %s res #%d", name, f.Text, i)
+		require.Equal(t, f.Index, res.Index, "[%s] %s index #%d", name, f.Text, i)
+		require.Equal(t, f.Phrase, res.Text, "[%s] %s text #%d", name, f.Text, i)
+		require.Equal(t, null.Add(f.Diff), res.Time, "[%s] %s diff #%d", name, f.Text, i)
 	}
 }
 
