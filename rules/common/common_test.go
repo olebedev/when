@@ -18,7 +18,7 @@ type Fixture struct {
 	Text   string
 	Index  int
 	Phrase string
-	Diff   time.Duration
+	Want   time.Time
 }
 
 func ApplyFixtures(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
@@ -28,7 +28,7 @@ func ApplyFixtures(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
 		require.NotNil(t, res, "[%s] res #%d", name, i)
 		require.Equal(t, f.Index, res.Index, "[%s] index #%d", name, i)
 		require.Equal(t, f.Phrase, res.Text, "[%s] text #%d", name, i)
-		require.Equal(t, f.Diff, res.Time.Sub(null), "[%s] diff #%d", name, i)
+		require.Equal(t, f.Want, res.Time, "[%s] %s diff #%d", name, f.Phrase, i)
 	}
 }
 
