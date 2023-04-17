@@ -61,16 +61,31 @@ func SlashMDY(s rules.Strategy) rules.Rule {
 				return true, nil
 			}
 
-			if month < int(ref.Month()) {
-				year = ref.Year() + 1
-			} else if month == int(ref.Month()) {
-				if day >= ref.Day() {
-					year = ref.Year()
+			if o.WantPast {
+				if month > int(ref.Month()) {
+					year = ref.Year() - 1
+				} else if month == int(ref.Month()) {
+					if day <= ref.Day() {
+						year = ref.Year()
+					} else {
+						year = ref.Year() - 1
+					}
 				} else {
-					year = ref.Year() + 1
+					year = ref.Year()
 				}
+
 			} else {
-				year = ref.Year()
+				if month < int(ref.Month()) {
+					year = ref.Year() + 1
+				} else if month == int(ref.Month()) {
+					if day >= ref.Day() {
+						year = ref.Year()
+					} else {
+						year = ref.Year() + 1
+					}
+				} else {
+					year = ref.Year()
+				}
 			}
 
 			goto WithYear

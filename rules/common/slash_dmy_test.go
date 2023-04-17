@@ -39,3 +39,28 @@ func TestSlashDMY(t *testing.T) {
 	ApplyFixtures(t, "common.SlashDMY", w, fixt)
 
 }
+
+func TestSlashDMYPast(t *testing.T) {
+	fixt := []Fixture{
+		{"The Deadline is 10/10/2016", 16, "10/10/2016", time.Date(2016, 10, 10, 0, 0, 0, 0, time.UTC)},
+		{"The Deadline is 1/2/2016", 16, "1/2/2016", time.Date(2016, 2, 1, 0, 0, 0, 0, time.UTC)},
+		{"The Deadline is 29/2/2016", 16, "29/2/2016", time.Date(2016, 2, 29, 0, 0, 0, 0, time.UTC)},
+
+		// before w/o a year says same year
+		{"The Deadline is 30/06", 16, "30/06", time.Date(2016, 6, 30, 0, 0, 0, 0, time.UTC)},
+
+		// prev day will still be this year
+		{"The Deadline is 14/07", 16, "14/07", time.Date(2016, 7, 14, 0, 0, 0, 0, time.UTC)},
+
+		// after w/o a year is prior year
+		{"The Deadline is 28/07", 16, "28/07", time.Date(2015, 7, 28, 0, 0, 0, 0, time.UTC)},
+
+		// Regression tests: current date and furture month
+		{"The Deadline is 15/07", 16, "15/07", time.Date(2016, 7, 15, 0, 0, 0, 0, time.UTC)},
+	}
+
+	w := when.New(&rules.Options{WantPast: true})
+	w.Add(common.SlashDMY(rules.Skip))
+
+	ApplyFixtures(t, "common.SlashDMY", w, fixt)
+}
