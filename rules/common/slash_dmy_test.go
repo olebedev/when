@@ -34,4 +34,8 @@ func TestSlashDMY(t *testing.T) {
 
 	ApplyFixtures(t, "common.SlashDMY", w, fixt)
 
+	nilFixt := []Fixture{
+		{"The Deadline is 1/20/2016", 16, "no match for mm/dd/yyyy", 0},
+	}
+	ApplyFixturesNil(t, "common.SlashDMY nil", w, nilFixt)
 }
