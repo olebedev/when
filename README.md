@@ -4,11 +4,11 @@
 
 ### Examples
 
-* **tonight at 11:10 pm**
-* at **Friday afternoon**
-* the deadline is **next tuesday 14:00**
-* drop me a line **next wednesday at 2:25 p.m**
-* it could be done at **11 am past tuesday**
+- **tonight at 11:10 pm**
+- at **Friday afternoon**
+- the deadline is **next tuesday 14:00**
+- drop me a line **next wednesday at 2:25 p.m**
+- it could be done at **11 am past tuesday**
 
 Check [EN](https://github.com/olebedev/when/blob/master/rules/en), [RU](https://github.com/olebedev/when/blob/master/rules/ru) and [BR](https://github.com/olebedev/when/blob/master/rules/br) rules and tests for them, for more examples.
 
@@ -25,9 +25,19 @@ on next wednesday at 2:25 p.m.
        weekday      hour + minute
 ```
 
-So, we have a cluster of matched rules - `"next wednesday at 2:25 p.m."` in the string representation. 
+So, we have a cluster of matched rules - `"next wednesday at 2:25 p.m."` in the string representation.
 
 After that, each rule is applied to the context. In order of definition or in match order, if [`options.MatchByOrder`](https://github.com/olebedev/when/blob/master/when.go#L141-L144) is set to `true`(which it is by default). Each rule could be applied with given merge strategy. By default, it's an [Override](https://github.com/olebedev/when/blob/master/rules/rules.go#L13) strategy. The other strategies are not implemented yet in the rules. **Pull requests are welcome.**
+
+### Install
+
+The project follows the official [release workflow](https://go.dev/doc/modules/release-workflow). It is recommended to refer to this resource for detailed information on the process.
+
+To install the latest version:
+
+```
+$ go get github.com/olebedev/when@latest
+```
 
 ### Usage
 
@@ -104,4 +114,3 @@ The project is in a more-or-less complete state. It's used for one project alrea
 ### LICENSE
 
 http://www.apache.org/licenses/LICENSE-2.0
-
