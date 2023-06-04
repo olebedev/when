@@ -1,12 +1,12 @@
 package zh_test
 
 import (
-	"github.com/olebedev/when/rules/zh"
 	"testing"
 	"time"
 
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/zh"
 )
 
 func TestExactMonthDate(t *testing.T) {
@@ -18,12 +18,15 @@ func TestExactMonthDate(t *testing.T) {
 		{"4 月 2 日", 0, "4 月 2 日", (19 * 24) * time.Hour},
 		{"四月一日", 0, "四月一日", (18 * 24) * time.Hour},
 		{"四月1日", 0, "四月1日", (18 * 24) * time.Hour},
+		{"四月", 0, "四月", (18 * 24) * time.Hour},
 		{"十一月一日", 0, "十一月一日", 5568 * time.Hour},
 		{"四月三十日", 0, "四月三十日", 1128 * time.Hour},
+		{"4月30日", 0, "4月30日", 1128 * time.Hour},
 		{"5月1号", 0, "5月1号", 1152 * time.Hour},
 		{"5/1", 0, "5/1", 1152 * time.Hour},
 		{"5月1日", 0, "5月1日", 1152 * time.Hour},
-		{"12号", 0, "12号", 1152 * time.Hour},
+		{"五月", 0, "五月", 1152 * time.Hour},
+		{"12号", 0, "12号", (-2 * 24) * time.Hour},
 	}
 
 	w := when.New(nil)

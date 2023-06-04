@@ -1,12 +1,12 @@
 package zh_test
 
 import (
-	"github.com/olebedev/when/rules/zh"
 	"testing"
 	"time"
 
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/zh"
 )
 
 func TestCasualDate(t *testing.T) {
@@ -19,7 +19,9 @@ func TestCasualDate(t *testing.T) {
 		{"前天", 0, "前天", (-2 * 24) * time.Hour},
 		{"大前天", 0, "大前天", (-3 * 24) * time.Hour},
 		{"下月", 0, "下月", (31 * 24) * time.Hour},
+		{"下个月", 0, "下个月", (31 * 24) * time.Hour},
 		{"下下月", 0, "下下月", (31*24 + 30*24) * time.Hour},
+		{"下下个月", 0, "下下个月", (31*24 + 30*24) * time.Hour},
 		{"明年", 0, "明年", (365 * 24) * time.Hour},
 		{"后年", 0, "后年", now.AddDate(2, 0, 0).Sub(now)},
 		{"下月6号", 0, "下月6号", 552 * time.Hour},
