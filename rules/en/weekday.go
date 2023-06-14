@@ -5,11 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 )
 
 func Weekday(s rules.Strategy) rules.Rule {
 	overwrite := s == rules.Override
+	merge := s == rules.Merge
+	skip := s == rules.Skip
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)" +
@@ -34,50 +36,57 @@ func Weekday(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
-			if c.Duration != 0 && !overwrite {
+			if c.Duration != 0 && skip {
 				return false, nil
 			}
 
+			var duration time.Duration
 			// Switch:
 			switch {
 			case strings.Contains(norm, "past") || strings.Contains(norm, "last"):
 				diff := int(ref.Weekday()) - dayInt
 				if diff > 0 {
-					c.Duration = -time.Duration(diff*24) * time.Hour
+					duration = -time.Duration(diff*24) * time.Hour
 				} else if diff < 0 {
-					c.Duration = -time.Duration(7+diff) * 24 * time.Hour
+					duration = -time.Duration(7+diff) * 24 * time.Hour
 				} else {
-					c.Duration = -(7 * 24 * time.Hour)
+					duration = -(7 * 24 * time.Hour)
 				}
 			case strings.Contains(norm, "next"):
 				diff := dayInt - int(ref.Weekday())
 				if diff > 0 {
-					c.Duration = time.Duration(diff*24) * time.Hour
+					duration = time.Duration(diff*24) * time.Hour
 				} else if diff < 0 {
-					c.Duration = time.Duration(7+diff) * 24 * time.Hour
+					duration = time.Duration(7+diff) * 24 * time.Hour
 				} else {
-					c.Duration = 7 * 24 * time.Hour
+					duration = 7 * 24 * time.Hour
 				}
 			case strings.Contains(norm, "this"):
 				if int(ref.Weekday()) < dayInt {
 					diff := dayInt - int(ref.Weekday())
 					if diff > 0 {
-						c.Duration = time.Duration(diff*24) * time.Hour
+						duration = time.Duration(diff*24) * time.Hour
 					} else if diff < 0 {
-						c.Duration = time.Duration(7+diff) * 24 * time.Hour
+						duration = time.Duration(7+diff) * 24 * time.Hour
 					} else {
-						c.Duration = 7 * 24 * time.Hour
+						duration = 7 * 24 * time.Hour
 					}
 				} else if int(ref.Weekday()) > dayInt {
 					diff := int(ref.Weekday()) - dayInt
 					if diff > 0 {
-						c.Duration = -time.Duration(diff*24) * time.Hour
+						duration = -time.Duration(diff*24) * time.Hour
 					} else if diff < 0 {
-						c.Duration = -time.Duration(7+diff) * 24 * time.Hour
+						duration = -time.Duration(7+diff) * 24 * time.Hour
 					} else {
-						c.Duration = -(7 * 24 * time.Hour)
+						duration = -(7 * 24 * time.Hour)
 					}
 				}
+			}
+
+			if overwrite {
+				c.Duration = duration
+			} else if merge {
+				c.Duration = c.Duration + duration
 			}
 
 			return true, nil

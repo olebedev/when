@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/olebedev/when/rules"
+	"github.com/omniboost/when/rules"
 )
 
 /*

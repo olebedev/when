@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/olebedev/when"
-	"github.com/olebedev/when/rules"
-	"github.com/olebedev/when/rules/en"
+	"github.com/omniboost/when"
+	"github.com/omniboost/when/rules"
+	"github.com/omniboost/when/rules/en"
 )
 
 func TestPastTime(t *testing.T) {
@@ -27,7 +27,7 @@ func TestPastTime(t *testing.T) {
 	}
 
 	w := when.New(nil)
-	w.Add(en.PastTime(rules.Skip))
+	w.Add(en.PastTime(rules.Override))
 
 	ApplyFixtures(t, "en.PastTime", w, fixt)
 }
