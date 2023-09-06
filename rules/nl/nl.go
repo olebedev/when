@@ -69,7 +69,7 @@ var MONTH_OFFSET = map[string]int{
 	"sept.":     9,
 	"oktober":   10,
 	"okt":       10,
-	"oct.":      10,
+	"okt.":      10,
 	"november":  11,
 	"nov":       11,
 	"nov.":      11,
