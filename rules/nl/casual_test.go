@@ -31,34 +31,9 @@ func TestCasualTime(t *testing.T) {
 		{"De deadline was tussen de middag", 16, "tussen de middag", 12 * time.Hour},
 		{"De deadline was deze middag", 16, "deze middag", 15 * time.Hour},
 		{"De deadline was deze avond", 16, "deze avond", 18 * time.Hour},
+		{"De deadline is donderdagavond", 15, "donderdagavond", (18 + 24) * time.Hour},
+		{"De deadline is vrijdagavond", 15, "vrijdagavond", (18 + 24*2) * time.Hour},
 	}
-
-	day := "maandagavond"
-
-	// picks the name of next day's evening from the current date
-	switch int(time.Now().Weekday()) {
-	case 1:
-		day = "dinsdagavond"
-	case 2:
-		day = "woensdagavond"
-	case 3:
-		day = "donderdagavond"
-	case 4:
-		day = "vrijdagavond"
-	case 5:
-		day = "zaterdagavond"
-	case 6:
-		day = "zondagavond"
-	default:
-		day = "maandagavond"
-	}
-
-	fixt = append(fixt, Fixture{
-		"De deadline is " + day,
-		15,
-		day,
-		(18 + 24) * time.Hour,
-	})
 
 	w := when.New(nil)
 	w.Add(nl.CasualTime(rules.Skip))
