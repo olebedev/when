@@ -1,7 +1,6 @@
 package when
 
 import (
-	"github.com/olebedev/when/rules/nl"
 	"sort"
 	"time"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/olebedev/when/rules/br"
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
+	"github.com/olebedev/when/rules/nl"
 	"github.com/olebedev/when/rules/ru"
 	"github.com/pkg/errors"
 )
