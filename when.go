@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/olebedev/when/rules"
+	"github.com/olebedev/when/rules/br"
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
+	"github.com/olebedev/when/rules/nl"
 	"github.com/olebedev/when/rules/ru"
-	"github.com/olebedev/when/rules/br"
 	"github.com/pkg/errors"
 )
 
@@ -153,6 +154,9 @@ var RU *Parser
 // BR is a parser for Brazilian Portuguese language
 var BR *Parser
 
+// NL is a parser for Dutch language
+var NL *Parser
+
 func init() {
 	EN = New(nil)
 	EN.Add(en.All...)
@@ -165,4 +169,8 @@ func init() {
 	BR = New(nil)
 	BR.Add(br.All...)
 	BR.Add(common.All...)
+
+	NL = New(nil)
+	NL.Add(nl.All...)
+	NL.Add(common.All...)
 }
