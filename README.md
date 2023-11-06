@@ -10,7 +10,7 @@
 - drop me a line **next wednesday at 2:25 p.m**
 - it could be done at **11 am past tuesday**
 
-Check [EN](https://github.com/olebedev/when/blob/master/rules/en), [RU](https://github.com/olebedev/when/blob/master/rules/ru) and [BR](https://github.com/olebedev/when/blob/master/rules/br) rules and tests for them, for more examples.
+Check [EN](https://github.com/olebedev/when/blob/master/rules/en) rules and tests of them, for more examples.
 
 **Needed rule not found?**
 Open [an issue](https://github.com/olebedev/when/issues/new) with the case and it will be added asap.
@@ -28,6 +28,14 @@ on next wednesday at 2:25 p.m.
 So, we have a cluster of matched rules - `"next wednesday at 2:25 p.m."` in the string representation.
 
 After that, each rule is applied to the context. In order of definition or in match order, if [`options.MatchByOrder`](https://github.com/olebedev/when/blob/master/when.go#L141-L144) is set to `true`(which it is by default). Each rule could be applied with given merge strategy. By default, it's an [Override](https://github.com/olebedev/when/blob/master/rules/rules.go#L13) strategy. The other strategies are not implemented yet in the rules. **Pull requests are welcome.**
+
+### Supported Languages
+
+- [EN](https://github.com/olebedev/when/blob/master/rules/en) - English
+- [RU](https://github.com/olebedev/when/blob/master/rules/ru) - Russian
+- [BR](https://github.com/olebedev/when/blob/master/rules/br) - Brazilian Portuguese
+- [ZH](https://github.com/olebedev/when/blob/master/rules/zh) - Chinese
+- [NL](https://github.com/olebedev/when/blob/master/rules/nl) - Dutch
 
 ### Install
 
@@ -98,12 +106,6 @@ fmt.Printf(r.Time.String())
 ### State of the project
 
 The project is in a more-or-less complete state. It's used for one project already. Bugs will be fixed as soon as they will be found.
-
-### Supported Languages
-
-- English
-- Russian
-- Brazilian Portuguese (#18)
 
 ### TODO
 
