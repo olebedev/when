@@ -15,7 +15,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 		RegExp: regexp.MustCompile("(?i)" +
 			"(?:\\W|^)" +
 			"(?:op\\s*?)?" +
-			"(?:(deze|vorige|afgelopen|volgende|komende)\\s*)?" +
+			"(?:(deze|vorige|vorige week|afgelopen|volgende|volgende week|komende|komende week)\\s*)?" +
 			"(" + WEEKDAY_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*(deze|vorige|afgelopen|volgende|komende)\\s*week)?" +
 			"(?:\\W|$)",
@@ -40,6 +40,18 @@ func Weekday(s rules.Strategy) rules.Rule {
 
 			// Switch:
 			switch {
+			case strings.Contains(norm, "vorige week"):
+				if dayInt == 6 {
+					dayInt = -1
+				}
+				diff := int(ref.Weekday()) - dayInt
+				if diff != 0 && dayInt <= 0 {
+					c.Duration = -time.Duration(diff) * 24 * time.Hour
+				} else if diff != 0 {
+					c.Duration = -time.Duration(7+diff) * 24 * time.Hour
+				} else {
+					c.Duration = -(7 * 24 * time.Hour)
+				}
 			case strings.Contains(norm, "afgelopen") || strings.Contains(norm, "vorige"):
 				diff := int(ref.Weekday()) - dayInt
 				if diff > 0 {
@@ -49,10 +61,16 @@ func Weekday(s rules.Strategy) rules.Rule {
 				} else {
 					c.Duration = -(7 * 24 * time.Hour)
 				}
+			case strings.Contains(norm, "volgende week"):
+				if dayInt == 0 {
+					dayInt = 7
+				}
+				diff := dayInt - int(ref.Weekday())
+				c.Duration = time.Duration(7+diff) * 24 * time.Hour
 			case strings.Contains(norm, "volgende"), strings.Contains(norm, "komende"):
 				diff := dayInt - int(ref.Weekday())
 				if diff > 0 {
-					c.Duration = time.Duration(diff*24) * time.Hour
+					c.Duration = time.Duration(diff) * 24 * time.Hour
 				} else if diff < 0 {
 					c.Duration = time.Duration(7+diff) * 24 * time.Hour
 				} else {
@@ -62,7 +80,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 				if int(ref.Weekday()) < dayInt {
 					diff := dayInt - int(ref.Weekday())
 					if diff > 0 {
-						c.Duration = time.Duration(diff*24) * time.Hour
+						c.Duration = time.Duration(diff) * 24 * time.Hour
 					} else if diff < 0 {
 						c.Duration = time.Duration(7+diff) * 24 * time.Hour
 					} else {
@@ -71,7 +89,7 @@ func Weekday(s rules.Strategy) rules.Rule {
 				} else if int(ref.Weekday()) > dayInt {
 					diff := int(ref.Weekday()) - dayInt
 					if diff > 0 {
-						c.Duration = -time.Duration(diff*24) * time.Hour
+						c.Duration = -time.Duration(diff) * 24 * time.Hour
 					} else if diff < 0 {
 						c.Duration = -time.Duration(7+diff) * 24 * time.Hour
 					} else {
