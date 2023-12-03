@@ -26,9 +26,15 @@ func Weekday(s rules.Strategy) rules.Rule {
 
 			day := strings.ToLower(strings.TrimSpace(m.Captures[1]))
 			norm := strings.ToLower(strings.TrimSpace(m.Captures[0] + m.Captures[2]))
+
 			if norm == "" {
-				norm = "next"
+				if o.WantPast {
+					norm = "last"
+				} else {
+					norm = "next"
+				}
 			}
+
 			dayInt, ok := WEEKDAY_OFFSET[day]
 			if !ok {
 				return false, nil

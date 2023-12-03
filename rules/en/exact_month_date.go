@@ -102,6 +102,35 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 				c.Day = &num
 			}
 
+			if o.WantPast {
+				year := ref.Year()
+
+				if c.Month != nil {
+					if *c.Month > int(ref.Month()) {
+						// future month
+						year = year - 1
+					} else if *c.Month == int(ref.Month()) {
+						if c.Day != nil && *c.Day > int(ref.Month()) {
+							// future day in this month
+							year = year - 1
+						}
+					} else {
+						// today or past
+					}
+				} else {
+					if c.Day != nil {
+						if *c.Day > int(ref.Day()) {
+							// future day in this month
+							year = year - 1
+						} else {
+							// today or past
+						}
+					}
+				}
+
+				c.Year = &year // XXXX: is this a potential nil pointer reference?
+			}
+
 			return true, nil
 		},
 	}
