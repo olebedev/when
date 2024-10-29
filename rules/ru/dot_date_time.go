@@ -13,7 +13,7 @@ import (
 
 func DotDateTime(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile(`(?i)(?:^|\b)(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})(?:\b|$)`),
+		RegExp: regexp.MustCompile(`(?i)(?:^|\b)(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2}))?(?:\b|$)`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if (c.Day != nil || c.Month != nil || c.Year != nil || c.Hour != nil || c.Minute != nil) && s != rules.Override {
 				return false, nil
@@ -34,14 +34,16 @@ func DotDateTime(s rules.Strategy) rules.Rule {
 				return false, errors.Wrap(err, "dot date time rule: year")
 			}
 
-			hour, err := strconv.Atoi(m.Captures[3])
-			if err != nil {
-				return false, errors.Wrap(err, "dot date time rule: hour")
-			}
-
-			minute, err := strconv.Atoi(m.Captures[4])
-			if err != nil {
-				return false, errors.Wrap(err, "dot date time rule: minute")
+			hour, minute := 0, 0
+			if m.Captures[3] != "" && m.Captures[4] != "" {
+				hour, err = strconv.Atoi(m.Captures[3])
+				if err != nil {
+					return false, errors.Wrap(err, "dot date time rule: hour")
+				}
+				minute, err = strconv.Atoi(m.Captures[4])
+				if err != nil {
+					return false, errors.Wrap(err, "dot date time rule: minute")
+				}
 			}
 
 			if day > 0 && day <= 31 && month > 0 && month <= 12 {
