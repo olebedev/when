@@ -14,7 +14,7 @@ import (
 
 func Date(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile(`(?i)(?:\b|^)(\d{1,2})\s*(` + MONTHS_PATTERN + `)\s*(\d{4})(?:\s*в\s*(\d{1,2}):(\d{2}))?(?:\b|$)`),
+		RegExp: regexp.MustCompile(`(?i)(?:\b|^)(\d{1,2})\s*(` + MONTHS_PATTERN + `)(?:\s*(\d{4}))?(?:\s*в\s*(\d{1,2}):(\d{2}))?(?:\b|$)`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 			if (c.Day != nil || c.Month != nil || c.Year != nil) || s != rules.Override {
 				return false, nil
@@ -30,9 +30,12 @@ func Date(s rules.Strategy) rules.Rule {
 				return false, errors.New("date rule: invalid month")
 			}
 
-			year, err := strconv.Atoi(m.Captures[2])
-			if err != nil {
-				return false, errors.Wrap(err, "date rule: year")
+			year := time.Now().Year()
+			if m.Captures[2] != "" {
+				year, err = strconv.Atoi(m.Captures[2])
+				if err != nil {
+					return false, errors.Wrap(err, "date rule: year")
+				}
 			}
 
 			hour, minute := 0, 0
