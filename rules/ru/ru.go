@@ -9,11 +9,11 @@ var All = []rules.Rule{
 	Weekday(rules.Override),
 	CasualDate(rules.Override),
 	CasualTime(rules.Override),
-	Date(rules.Override),
-	DotDateTime(rules.Override),
 	Hour(rules.Override),
 	HourMinute(rules.Override),
 	Deadline(rules.Override),
+	Date(rules.Override),
+	DotDateTime(rules.Override),
 }
 
 var WEEKDAY_OFFSET = map[string]int{

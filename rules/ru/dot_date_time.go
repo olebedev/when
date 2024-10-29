@@ -15,7 +15,7 @@ func DotDateTime(s rules.Strategy) rules.Rule {
 	return &rules.F{
 		RegExp: regexp.MustCompile(`(?i)(?:^|\b)(\d{2})\.(\d{2})\.(\d{4})\s+(\d{2}):(\d{2})(?:\b|$)`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			if c.Day != nil || c.Month != nil || c.Year != nil {
+			if (c.Day != nil || c.Month != nil || c.Year != nil || c.Hour != nil || c.Minute != nil) && s != rules.Override {
 				return false, nil
 			}
 

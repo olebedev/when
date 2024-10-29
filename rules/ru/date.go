@@ -16,7 +16,7 @@ func Date(s rules.Strategy) rules.Rule {
 	return &rules.F{
 		RegExp: regexp.MustCompile(`(?i)(?:\b|^)(\d{1,2})\s*(` + MONTHS_PATTERN + `)\s*(\d{4})(?:\s*в\s*(\d{1,2}):(\d{2}))?(?:\b|$)`),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			if c.Day != nil || c.Month != nil || c.Year != nil {
+			if (c.Day != nil || c.Month != nil || c.Year != nil) || s != rules.Override {
 				return false, nil
 			}
 
