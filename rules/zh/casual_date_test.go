@@ -10,8 +10,6 @@ import (
 )
 
 func TestCasualDate(t *testing.T) {
-	// current is Monday
-	now := time.Now()
 	fixt := []Fixture{
 		{"后天中午", 0, "后天", (2 * 24) * time.Hour},
 		{"大后天中午", 0, "大后天", (3 * 24) * time.Hour},
