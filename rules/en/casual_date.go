@@ -24,15 +24,23 @@ func CasualDate(s rules.Strategy) rules.Rule {
 					c.Minute = pointer.ToInt(0)
 				}
 			case strings.Contains(lower, "today"):
-				// c.Hour = pointer.ToInt(18)
+				c.Hour = pointer.ToInt(0)
+				c.Minute = pointer.ToInt(0)
+				c.Second = pointer.ToInt(0)
 			case strings.Contains(lower, "tomorrow"), strings.Contains(lower, "tmr"):
 				if c.Duration == 0 || overwrite {
 					c.Duration += time.Hour * 24
 				}
+				c.Hour = pointer.ToInt(0)
+				c.Minute = pointer.ToInt(0)
+				c.Second = pointer.ToInt(0)
 			case strings.Contains(lower, "yesterday"):
 				if c.Duration == 0 || overwrite {
 					c.Duration -= time.Hour * 24
 				}
+				c.Hour = pointer.ToInt(0)
+				c.Minute = pointer.ToInt(0)
+				c.Second = pointer.ToInt(0)
 			case strings.Contains(lower, "last night"):
 				if (c.Hour == nil && c.Duration == 0) || overwrite {
 					c.Hour = pointer.ToInt(23)
