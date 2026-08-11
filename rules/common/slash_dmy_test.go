@@ -27,6 +27,10 @@ func TestSlashDMY(t *testing.T) {
 
 		// prev day will be added to the future
 		{"The Deadline is 14/07", 16, "14/07", (195 + 366 - OFFSET) * 24 * time.Hour},
+
+		// Existing doesn't work for a month in the future
+		{"The Deadline is 14/08", 16, "14/08", time.Date(2016, 8, 14, 0, 0, 0, 0, time.UTC).Sub(null)},
+		{"The Deadline is 15/07", 16, "15/07", time.Date(2016, 7, 15, 0, 0, 0, 0, time.UTC).Sub(null)},
 	}
 
 	w := when.New(nil)
