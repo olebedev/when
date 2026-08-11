@@ -10,23 +10,21 @@ import (
 
 /*
 
-- DD/MM/YYYY
-- 11/3/2015
-- 11/3/2015
-- 11/3
+- MM/DD/YYYY
+- 3/14/2015
+- 03/14/2015
+- 3/14
 
 also with "\", gift for windows' users
-
-https://play.golang.org/p/29LkTfe1Xr
 */
 
-func SlashDMY(s rules.Strategy) rules.Rule {
+func SlashMDY(s rules.Strategy) rules.Rule {
 
 	return &rules.F{
 		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
-			"(0{0,1}[1-9]|1[0-9]|2[0-9]|3[01])" +
+			"([0-3]{0,1}[0-9]{1})" +
 			"[\\/\\\\]" +
-			"(0{0,1}[1-9]|1[0-2])" +
+			"([0-3]{0,1}[0-9]{1})" +
 			"(?:[\\/\\\\]" +
 			"((?:1|2)[0-9]{3})\\s*)?" +
 			"(?:\\W|$)"),
@@ -35,8 +33,8 @@ func SlashDMY(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
-			day, _ := strconv.Atoi(m.Captures[0])
-			month, _ := strconv.Atoi(m.Captures[1])
+			month, _ := strconv.Atoi(m.Captures[0])
+			day, _ := strconv.Atoi(m.Captures[1])
 			year := -1
 			if m.Captures[2] != "" {
 				year, _ = strconv.Atoi(m.Captures[2])

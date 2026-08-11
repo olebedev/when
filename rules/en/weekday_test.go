@@ -9,6 +9,8 @@ import (
 	"github.com/olebedev/when/rules/en"
 )
 
+// Reference date is Wed, Jan 6, 2016
+
 func TestWeekday(t *testing.T) {
 	// current is Friday
 	fixt := []Fixture{
@@ -26,6 +28,10 @@ func TestWeekday(t *testing.T) {
 		{"this tuesday", 0, "this tuesday", -(24 * time.Hour)},
 		{"drop me a line at this wednesday", 18, "this wednesday", 0},
 		{"this saturday", 0, "this saturday", 3 * 24 * time.Hour},
+		// not specified
+		{"tuesday", 0, "tuesday", (7 - 1) * 24 * time.Hour},
+		{"wednesday", 0, "wednesday", (7 - 0) * 24 * time.Hour},
+		{"saturday", 0, "saturday", 3 * 24 * time.Hour},
 	}
 
 	w := when.New(nil)
@@ -33,4 +39,23 @@ func TestWeekday(t *testing.T) {
 	w.Add(en.Weekday(rules.Override))
 
 	ApplyFixtures(t, "en.Weekday", w, fixt)
+}
+
+func TestWeekdayPast(t *testing.T) {
+	// current is Friday
+	fixt := []Fixture{
+		// not specified
+		{"tuesday", 0, "tuesday", -1 * 24 * time.Hour},
+		{"wednesday", 0, "wednesday", -7 * 24 * time.Hour},
+		{"saturday", 0, "saturday", (3 - 7) * 24 * time.Hour},
+	}
+
+	w := when.New(&rules.Options{
+		Distance:     5,
+		MatchByOrder: true,
+		WantPast:     true})
+
+	w.Add(en.Weekday(rules.Override))
+
+	ApplyFixtures(t, "en.Weekday WantPast", w, fixt)
 }

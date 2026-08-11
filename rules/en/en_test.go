@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
 	"github.com/stretchr/testify/require"
 )
@@ -21,11 +22,11 @@ type Fixture struct {
 func ApplyFixtures(t *testing.T, name string, w *when.Parser, fixt []Fixture) {
 	for i, f := range fixt {
 		res, err := w.Parse(f.Text, null)
-		require.Nil(t, err, "[%s] err #%d", name, i)
-		require.NotNil(t, res, "[%s] res #%d", name, i)
-		require.Equal(t, f.Index, res.Index, "[%s] index #%d", name, i)
-		require.Equal(t, f.Phrase, res.Text, "[%s] text #%d", name, i)
-		require.Equal(t, f.Diff, res.Time.Sub(null), "[%s] diff #%d", name, i)
+		require.Nil(t, err, "[%s] %s err #%d", name, f.Text, i)
+		require.NotNil(t, res, "[%s] %s res #%d", name, f.Text, i)
+		require.Equal(t, f.Index, res.Index, "[%s] %s index #%d", name, f.Text, i)
+		require.Equal(t, f.Phrase, res.Text, "[%s] %s text #%d", name, f.Text, i)
+		require.Equal(t, null.Add(f.Diff), res.Time, "[%s] %s diff #%d", name, f.Text, i)
 	}
 }
 
@@ -60,4 +61,21 @@ func TestAll(t *testing.T) {
 	}
 
 	ApplyFixtures(t, "en.All...", w, fixt)
+}
+
+func TestAllPast(t *testing.T) {
+	w := when.New(&rules.Options{
+		Distance:     5,
+		MatchByOrder: true,
+		WantPast:     true})
+	w.Add(en.All...)
+
+	// complex cases
+	fixt := []Fixture{
+		{"at Friday afternoon", 3, "Friday afternoon", (((2 - 7) * 24) + 15) * time.Hour},
+		{"tuesday at 14:00", 0, "tuesday at 14:00", ((-1 * 24) + 14) * time.Hour},
+		{"tuesday at 2p", 0, "tuesday at 2p", ((-1 * 24) + 14) * time.Hour},
+	}
+
+	ApplyFixtures(t, "en.All... WantPast", w, fixt)
 }

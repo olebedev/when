@@ -24,6 +24,8 @@ type Options struct {
 
 	MatchByOrder bool
 
+	WantPast bool
+
 	// TODO
 	// WeekStartsOn time.Weekday
 }

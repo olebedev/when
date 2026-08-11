@@ -143,6 +143,7 @@ func New(o *rules.Options) *Parser {
 var defaultOptions = &rules.Options{
 	Distance:     5,
 	MatchByOrder: true,
+	WantPast:     false,
 }
 
 // EN is a parser for English language
