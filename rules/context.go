@@ -29,7 +29,16 @@ func (c *Context) Time(t time.Time) (time.Time, error) {
 	}
 
 	if c.Month != nil {
-		t = time.Date(t.Year(), time.Month(*c.Month), t.Day(),
+		month := time.Month(*c.Month)
+
+		// time.Date would normalize a day the target month lacks into the next
+		// one; clamp instead.
+		day := t.Day()
+		if last := daysIn(month, t.Year()); day > last {
+			day = last
+		}
+
+		t = time.Date(t.Year(), month, day,
 			t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 	}
 
@@ -65,4 +74,9 @@ func (c *Context) Time(t time.Time) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+// daysIn returns the number of days in the given month of the given year.
+func daysIn(m time.Month, year int) int {
+	return time.Date(year, m+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }
