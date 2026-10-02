@@ -31,3 +31,23 @@ func TestDeadline(t *testing.T) {
 
 	ApplyFixtures(t, "en.Deadline", w, fixt)
 }
+
+func TestDeadlineAggressive(t *testing.T) {
+	fixt := []Fixture{
+		{"2 hours", 0, "2 hours", 2 * time.Hour},
+		{"remind me 4 days later", 10, "4 days", 4 * 24 * time.Hour},
+		{"a week", 0, "a week", 7 * 24 * time.Hour},
+		{"within half an hour", 0, "within half an hour", time.Hour / 2},
+		{"call me back in 5 minutes", 13, "in 5 minutes", 5 * time.Minute},
+	}
+
+	w := when.New(nil)
+	w.Add(en.Deadline(rules.Skip, en.DeadlineOptions{Aggressive: true}))
+
+	ApplyFixtures(t, "en.Deadline aggressive", w, fixt)
+
+	w = when.New(nil)
+	w.Add(en.Deadline(rules.Skip))
+
+	ApplyFixturesNil(t, "en.Deadline", w, []Fixture{{"2 hours", 0, "", 0}})
+}
