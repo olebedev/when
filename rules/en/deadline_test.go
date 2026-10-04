@@ -7,6 +7,7 @@ import (
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
+	"github.com/stretchr/testify/require"
 )
 
 func TestDeadline(t *testing.T) {
@@ -30,4 +31,27 @@ func TestDeadline(t *testing.T) {
 	w.Add(en.Deadline(rules.Skip))
 
 	ApplyFixtures(t, "en.Deadline", w, fixt)
+}
+
+func TestDeadlineMonthsCrossYear(t *testing.T) {
+	ref := time.Date(2016, time.October, 6, 0, 0, 0, 0, time.UTC)
+	fixt := []struct {
+		text string
+		want time.Time
+	}{
+		{"in 2 months", time.Date(2016, time.December, 6, 0, 0, 0, 0, time.UTC)},
+		{"in 3 months", time.Date(2017, time.January, 6, 0, 0, 0, 0, time.UTC)},
+		{"in 14 months", time.Date(2017, time.December, 6, 0, 0, 0, 0, time.UTC)},
+		{"within half a year", time.Date(2017, time.April, 6, 0, 0, 0, 0, time.UTC)},
+	}
+
+	w := when.New(nil)
+	w.Add(en.Deadline(rules.Skip))
+
+	for _, f := range fixt {
+		res, err := w.Parse(f.text, ref)
+		require.Nil(t, err, f.text)
+		require.NotNil(t, res, f.text)
+		require.True(t, f.want.Equal(res.Time), "%s: got %s", f.text, res.Time)
+	}
 }

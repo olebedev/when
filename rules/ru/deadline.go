@@ -60,7 +60,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 				case strings.Contains(exponent, "недел"):
 					c.Duration = time.Duration(num) * 7 * 24 * time.Hour
 				case strings.Contains(exponent, "месяц"):
-					c.Month = pointer.ToInt((int(ref.Month()) + num) % 12)
+					c.Month = pointer.ToInt(int(ref.Month()) + num)
 				case strings.Contains(exponent, "год") || strings.Contains(exponent, "лет"):
 					c.Year = pointer.ToInt(ref.Year() + num)
 				}
@@ -76,7 +76,7 @@ func Deadline(s rules.Strategy) rules.Rule {
 					// 2 weeks
 					c.Duration = 14 * 24 * time.Hour
 				case strings.Contains(exponent, "год") || strings.Contains(exponent, "лет"):
-					c.Month = pointer.ToInt((int(ref.Month()) + 6) % 12)
+					c.Month = pointer.ToInt(int(ref.Month()) + 6)
 				}
 			}
 
