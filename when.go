@@ -31,6 +31,8 @@ type Result struct {
 	Source string
 	// Time is an output time
 	Time time.Time
+	// Duration is an output relative duration
+	Duration time.Duration
 }
 
 // Parse returns Result and error if any. If have not matches it returns nil, nil.
@@ -112,6 +114,8 @@ func (p *Parser) Parse(text string, base time.Time) (*Result, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "bind context")
 	}
+
+	res.Duration = ctx.Duration
 
 	return &res, nil
 }
