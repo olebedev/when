@@ -62,6 +62,9 @@ func HourMinute(s rules.Strategy) rules.Rule {
 				}
 				switch m.Captures[2][0] {
 				case 65, 97: // am
+					if hour == 12 {
+						hour = 0
+					}
 					c.Hour = &hour
 				case 80, 112: // pm
 					if hour < 12 {
