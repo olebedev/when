@@ -11,18 +11,26 @@ import (
 	"github.com/pkg/errors"
 )
 
+var (
+	pointInTime = "(" + INTEGER_WORDS_PATTERN + "|[0-9]+|an?(?:\\s*few)?|half(?:\\s*an?)?)\\s*" +
+		"(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?)\\s*"
+)
+
 func Deadline(s rules.Strategy) rules.Rule {
 	overwrite := s == rules.Override
 
 	return &rules.F{
 		RegExp: regexp.MustCompile(
-			"(?i)(?:\\W|^)(within|in)\\s*" +
-				"(" + INTEGER_WORDS_PATTERN + "|[0-9]+|an?(?:\\s*few)?|half(?:\\s*an?)?)\\s*" +
-				"(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?)\\s*" +
+			"(?i)(?:\\W|^)" +
+				"(within|in)\\s*" + pointInTime + "|" + pointInTime + "\\s+(from\\s+now)" +
 				"(?:\\W|$)"),
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
 
 			numStr := strings.TrimSpace(m.Captures[1])
+
+			if numStr == "" {
+				numStr = strings.TrimSpace(m.Captures[3])
+			}
 
 			var num int
 			var err error
@@ -43,6 +51,10 @@ func Deadline(s rules.Strategy) rules.Rule {
 			}
 
 			exponent := strings.TrimSpace(m.Captures[2])
+
+			if exponent == "" {
+				exponent = strings.TrimSpace(m.Captures[4])
+			}
 
 			if !strings.Contains(numStr, "half") {
 				switch {
