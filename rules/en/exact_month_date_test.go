@@ -29,7 +29,7 @@ func TestExactMonthDate(t *testing.T) {
 		{"october 21st", 0, "october 21st", 6936 * time.Hour},
 		{"twentieth of december", 0, "twentieth of december", 8376 * time.Hour},
 		{"march 10th", 0, "march 10th", 1536 * time.Hour},
-		{"jan. 4", 0, "jan. 4", -48 * time.Hour},
+		{"jan. 4", 0, "jan. 4", 8736 * time.Hour},
 		{"february", 0, "february", 744 * time.Hour},
 		{"october", 0, "october", 6576 * time.Hour},
 		{"jul.", 0, "jul.", 4368 * time.Hour},
@@ -51,11 +51,11 @@ func TestExactMonthDateFromLongMonth(t *testing.T) {
 		Text     string
 		Expected time.Time
 	}{
-		{"september 5th", time.Date(2016, time.September, 5, 0, 0, 0, 0, time.UTC)},
-		{"february 11", time.Date(2016, time.February, 11, 0, 0, 0, 0, time.UTC)},
-		{"1st of june", time.Date(2016, time.June, 1, 0, 0, 0, 0, time.UTC)},
+		{"september 5th", time.Date(2017, time.September, 5, 0, 0, 0, 0, time.UTC)},
+		{"february 11", time.Date(2017, time.February, 11, 0, 0, 0, 0, time.UTC)},
+		{"1st of june", time.Date(2017, time.June, 1, 0, 0, 0, 0, time.UTC)},
 		// No day in the text: the reference day clamps to the month's last.
-		{"september", time.Date(2016, time.September, 30, 0, 0, 0, 0, time.UTC)},
+		{"september", time.Date(2017, time.September, 30, 0, 0, 0, 0, time.UTC)},
 		// Months that do have a 31st keep the reference day untouched.
 		{"december", time.Date(2016, time.December, 31, 0, 0, 0, 0, time.UTC)},
 	}
@@ -67,3 +67,53 @@ func TestExactMonthDateFromLongMonth(t *testing.T) {
 		require.Equal(t, f.Expected, res.Time, "[en.ExactMonthDate] time #%d", i)
 	}
 }
+
+func TestExactMonthDateFutureBias(t *testing.T) {
+	w := when.New(nil)
+	w.Add(en.ExactMonthDate(rules.Override))
+
+	// End of year case from issue #29:
+	ref := time.Date(2021, time.December, 28, 12, 0, 0, 0, time.UTC)
+
+	tests := []struct {
+		text     string
+		expected time.Time
+	}{
+		{"january 4th", time.Date(2022, time.January, 4, 12, 0, 0, 0, time.UTC)},
+		{"january 4", time.Date(2022, time.January, 4, 12, 0, 0, 0, time.UTC)},
+		{"jan. 4", time.Date(2022, time.January, 4, 12, 0, 0, 0, time.UTC)},
+		{"4th of january", time.Date(2022, time.January, 4, 12, 0, 0, 0, time.UTC)},
+		{"january", time.Date(2022, time.January, 28, 12, 0, 0, 0, time.UTC)},
+		{"december 28th", time.Date(2021, time.December, 28, 12, 0, 0, 0, time.UTC)},
+		{"december 29th", time.Date(2021, time.December, 29, 12, 0, 0, 0, time.UTC)},
+		{"december 27th", time.Date(2022, time.December, 27, 12, 0, 0, 0, time.UTC)},
+	}
+
+	for _, tt := range tests {
+		res, err := w.Parse(tt.text, ref)
+		require.NoError(t, err)
+		require.NotNil(t, res)
+		require.Equal(t, tt.expected, res.Time)
+	}
+
+	// Leap year edge case: 2020 is a leap year, next year 2021 is not
+	leapRef := time.Date(2020, time.March, 1, 10, 0, 0, 0, time.UTC)
+	res, err := w.Parse("february 29th", leapRef)
+	require.NoError(t, err)
+	require.NotNil(t, res)
+	require.Equal(t, time.Date(2021, time.February, 28, 10, 0, 0, 0, time.UTC), res.Time)
+
+	// Strategy check: skip should not override already set month
+	wSkip := when.New(nil)
+	wSkip.Add(en.ExactMonthDate(rules.Skip))
+	ctx := &rules.Context{
+		Month: func(i int) *int { return &i }(11),
+	}
+	match := en.ExactMonthDate(rules.Skip).Find("january 4th")
+	require.NotNil(t, match)
+	applied, err := match.Apply(ctx, nil, ref)
+	require.NoError(t, err)
+	require.False(t, applied)
+	require.Equal(t, 11, *ctx.Month)
+}
+
