@@ -68,7 +68,7 @@ func PastTime(s rules.Strategy) rules.Rule {
 					}
 				case strings.Contains(exponent, "month"):
 					if c.Month == nil || overwrite {
-						c.Month = pointer.ToInt((int(ref.Month()) - num) % 12)
+						c.Month = pointer.ToInt(int(ref.Month()) - num)
 					}
 				case strings.Contains(exponent, "year"):
 					if c.Year == nil || overwrite {
@@ -96,7 +96,7 @@ func PastTime(s rules.Strategy) rules.Rule {
 					}
 				case strings.Contains(exponent, "year"):
 					if c.Month == nil || overwrite {
-						c.Month = pointer.ToInt((int(ref.Month()) - 6) % 12)
+						c.Month = pointer.ToInt(int(ref.Month()) - 6)
 					}
 				}
 			}

@@ -7,6 +7,7 @@ import (
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules"
 	"github.com/olebedev/when/rules/en"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPastTime(t *testing.T) {
@@ -30,4 +31,26 @@ func TestPastTime(t *testing.T) {
 	w.Add(en.PastTime(rules.Skip))
 
 	ApplyFixtures(t, "en.PastTime", w, fixt)
+}
+
+func TestPastTimeMonthsCrossYear(t *testing.T) {
+	ref := time.Date(2016, time.February, 6, 0, 0, 0, 0, time.UTC)
+	fixt := []struct {
+		text string
+		want time.Time
+	}{
+		{"2 months ago", time.Date(2015, time.December, 6, 0, 0, 0, 0, time.UTC)},
+		{"14 months ago", time.Date(2014, time.December, 6, 0, 0, 0, 0, time.UTC)},
+		{"half a year ago", time.Date(2015, time.August, 6, 0, 0, 0, 0, time.UTC)},
+	}
+
+	w := when.New(nil)
+	w.Add(en.PastTime(rules.Skip))
+
+	for _, f := range fixt {
+		res, err := w.Parse(f.text, ref)
+		require.Nil(t, err, f.text)
+		require.NotNil(t, res, f.text)
+		require.True(t, f.want.Equal(res.Time), "%s: got %s", f.text, res.Time)
+	}
 }
