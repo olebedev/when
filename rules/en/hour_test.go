@@ -21,6 +21,8 @@ func TestHour(t *testing.T) {
 		{"at 5A.", 3, "5A.", 5 * time.Hour},
 		{"5A.", 0, "5A.", 5 * time.Hour},
 		{"11 P.M.", 0, "11 P.M.", 23 * time.Hour},
+		{"at 12 am", 3, "12 am", 0},
+		{"12A.M.", 0, "12A.M.", 0},
 	}
 
 	w := when.New(nil)

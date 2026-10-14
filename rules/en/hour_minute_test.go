@@ -20,6 +20,9 @@ func TestHourMinute(t *testing.T) {
 		{"at 5-59 pm", 3, "5-59 pm", (17 * time.Hour) + (59 * time.Minute)},
 		{"at 17-59 pam", 3, "17-59", (17 * time.Hour) + (59 * time.Minute)},
 		{"up to 11:10 pm", 6, "11:10 pm", (23 * time.Hour) + (10 * time.Minute)},
+		{"12:30am", 0, "12:30am", 30 * time.Minute},
+		{"at 12:00 am", 3, "12:00 am", 0},
+		{"12:30pm", 0, "12:30pm", (12 * time.Hour) + (30 * time.Minute)},
 	}
 
 	fixtnil := []Fixture{
