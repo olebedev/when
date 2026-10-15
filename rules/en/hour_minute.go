@@ -41,6 +41,24 @@ func HourMinute(s rules.Strategy) rules.Rule {
 				return false, nil
 			}
 
+			// Check if previous character starts with a time separator. If so:
+			// skip this rule
+			if m.Left > 0 {
+				prevChar := c.Source[m.Left-1 : m.Left]
+				if prevChar == ":" || prevChar == "：" || prevChar == "-" {
+					return false, nil
+				}
+			}
+
+			// Check if next character starts with a time separator. If so:
+			// skip this rule
+			if m.Right+1 < len(c.Source) {
+				nextChar := c.Source[m.Right : m.Right+1]
+				if nextChar == ":" || nextChar == "：" || nextChar == "-" {
+					return false, nil
+				}
+			}
+
 			hour, err := strconv.Atoi(m.Captures[0])
 			if err != nil {
 				return false, errors.Wrap(err, "hour minute rule")
