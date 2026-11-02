@@ -54,3 +54,26 @@ func TestPastTimeMonthsCrossYear(t *testing.T) {
 		require.True(t, f.want.Equal(res.Time), "%s: got %s", f.text, res.Time)
 	}
 }
+
+// Parsed against the 29th of February, the target year has no such day and
+// used to overflow into March.
+func TestPastTimeYearFromLeapDay(t *testing.T) {
+	ref := time.Date(2024, time.February, 29, 0, 0, 0, 0, time.UTC)
+	fixt := []struct {
+		text string
+		want time.Time
+	}{
+		{"a year ago", time.Date(2023, time.February, 28, 0, 0, 0, 0, time.UTC)},
+		{"4 years ago", time.Date(2020, time.February, 29, 0, 0, 0, 0, time.UTC)},
+	}
+
+	w := when.New(nil)
+	w.Add(en.PastTime(rules.Skip))
+
+	for _, f := range fixt {
+		res, err := w.Parse(f.text, ref)
+		require.Nil(t, err, f.text)
+		require.NotNil(t, res, f.text)
+		require.True(t, f.want.Equal(res.Time), "%s: got %s", f.text, res.Time)
+	}
+}

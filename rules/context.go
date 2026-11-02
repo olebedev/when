@@ -24,7 +24,14 @@ func (c *Context) Time(t time.Time) (time.Time, error) {
 	}
 
 	if c.Year != nil {
-		t = time.Date(*c.Year, t.Month(), t.Day(), t.Hour(),
+		// The 29th of February does not exist in every year; clamp it the
+		// same way the month is clamped below.
+		day := t.Day()
+		if last := daysIn(t.Month(), *c.Year); day > last {
+			day = last
+		}
+
+		t = time.Date(*c.Year, t.Month(), day, t.Hour(),
 			t.Minute(), t.Second(), t.Nanosecond(), t.Location())
 	}
 
