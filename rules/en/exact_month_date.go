@@ -47,7 +47,9 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 		),
 
 		Applier: func(m *rules.Match, c *rules.Context, o *rules.Options, ref time.Time) (bool, error) {
-			_ = overwrite
+			if (c.Month != nil || c.Day != nil) && !overwrite {
+				return false, nil
+			}
 
 			ord1 := strings.ToLower(strings.TrimSpace(m.Captures[0]))
 			num1 := strings.ToLower(strings.TrimSpace(m.Captures[1]))
@@ -102,7 +104,36 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 				c.Day = &num
 			}
 
+			if c.Year == nil {
+				year := ref.Year()
+				day := ref.Day()
+				if c.Day != nil {
+					day = *c.Day
+				}
+
+				if last := daysIn(time.Month(monInt), year); day > last {
+					day = last
+				}
+
+				dateInRefYear := time.Date(year, time.Month(monInt), day, 0, 0, 0, 0, ref.Location())
+				refDate := time.Date(ref.Year(), ref.Month(), ref.Day(), 0, 0, 0, 0, ref.Location())
+				if dateInRefYear.Before(refDate) {
+					year++
+					c.Year = &year
+					if c.Day != nil {
+						if last := daysIn(time.Month(monInt), year); *c.Day > last {
+							c.Day = &last
+						}
+					}
+				}
+			}
+
 			return true, nil
 		},
 	}
 }
+
+func daysIn(m time.Month, year int) int {
+	return time.Date(year, m+1, 0, 0, 0, 0, 0, time.UTC).Day()
+}
+
