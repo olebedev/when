@@ -103,6 +103,16 @@ fmt.Printf(r.Time.String())
 //   13:46:21 (correct)
 ```
 
+#### Timezones
+
+The timezone rule is not part of `common.All`, add it to have `10 pm EST` or `22:00 UTC+2` returned in that zone:
+
+```go
+w.Add(common.Timezone(rules.Override))
+```
+
+It knows `UTC` and `GMT` with an optional offset (`GMT-05:30`, `UTC+0530`) and a few upper case abbreviations (`EST`, `PDT`, `CET`, ...), each as a fixed offset.
+
 ### State of the project
 
 The project is in a more-or-less complete state. It's used for one project already. Bugs will be fixed as soon as they will be found.
