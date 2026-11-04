@@ -3,7 +3,8 @@ package rules
 import "time"
 
 type Context struct {
-	Text string
+	Source string
+	Text   string
 
 	// accumulator of relative values
 	Duration time.Duration
