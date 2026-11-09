@@ -15,6 +15,8 @@ func TestCasualDate(t *testing.T) {
 		{"The Deadline is today", 16, "today", 0},
 		{"The Deadline is tonight", 16, "tonight", 23 * time.Hour},
 		{"The Deadline is tomorrow evening", 16, "tomorrow", time.Hour * 24},
+		{"the day after tomorrow", 0, "the day after tomorrow", 48 * time.Hour},
+		{"the day before yesterday", 0, "the day before yesterday", -48 * time.Hour},
 		{"The Deadline is yesterday evening", 16, "yesterday", -(time.Hour * 24)},
 	}
 
