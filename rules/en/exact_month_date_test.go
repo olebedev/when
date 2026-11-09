@@ -67,3 +67,24 @@ func TestExactMonthDateFromLongMonth(t *testing.T) {
 		require.Equal(t, f.Expected, res.Time, "[en.ExactMonthDate] time #%d", i)
 	}
 }
+
+func TestExactMonthDateWithYear(t *testing.T) {
+	w := when.New(nil)
+	w.Add(en.ExactMonthDate(rules.Override))
+	ref := time.Date(2024, 3, 13, 10, 30, 0, 0, time.UTC)
+
+	for text, want := range map[string]string{
+		"March 15, 2025":      "2025-03-15",
+		"December 25th, 2030": "2030-12-25",
+		"15 March 2025":       "2025-03-15",
+		"March 15":            "2024-03-15",
+	} {
+		r, err := w.Parse(text, ref)
+		if err != nil || r == nil {
+			t.Fatalf("%s: %v %v", text, r, err)
+		}
+		if got := r.Time.Format("2006-01-02"); got != want {
+			t.Errorf("%s: got %s, want %s", text, got, want)
+		}
+	}
+}

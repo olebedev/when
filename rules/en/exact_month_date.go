@@ -43,6 +43,7 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 			"(?:(?:(" + ORDINAL_WORDS_PATTERN[3:] + "(?:\\s+of)?|([0-9]+))\\s*)?" +
 			"(" + MONTH_OFFSET_PATTERN[3:] + // skip '(?:'
 			"(?:\\s*(?:(" + ORDINAL_WORDS_PATTERN[3:] + "|([0-9]+)))?" +
+			"(?:\\s*,?\\s*([0-9]{4}))?" +
 			"(?:\\W|$)",
 		),
 
@@ -54,6 +55,12 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 			mon := strings.ToLower(strings.TrimSpace(m.Captures[2]))
 			ord2 := strings.ToLower(strings.TrimSpace(m.Captures[3]))
 			num2 := strings.ToLower(strings.TrimSpace(m.Captures[4]))
+			year := m.Captures[5]
+
+			// in "15 March 2025" the only number after the month is the year
+			if len(num2) == 4 && year == "" {
+				year, num2 = num2, ""
+			}
 
 			monInt, ok := MONTH_OFFSET[mon]
 			if !ok {
@@ -100,6 +107,15 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 				num := int(n)
 
 				c.Day = &num
+			}
+
+			if year != "" {
+				y, err := strconv.Atoi(year)
+				if err != nil {
+					return false, nil
+				}
+
+				c.Year = &y
 			}
 
 			return true, nil
