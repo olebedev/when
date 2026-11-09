@@ -30,7 +30,8 @@ import (
 
 func HourMinute(s rules.Strategy) rules.Rule {
 	return &rules.F{
-		RegExp: regexp.MustCompile("(?i)(?:\\W|^)" +
+		// the left boundary skips a dash after a digit, which is the month of a date like 2024-03-20
+		RegExp: regexp.MustCompile("(?i)(?:[^\\w\\-]|^|(?:\\D|^)\\-)" +
 			"((?:[0-1]{0,1}[0-9])|(?:2[0-3]))" +
 			"(?:\\:|：|\\-)" +
 			"((?:[0-5][0-9]))" +
