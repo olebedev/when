@@ -29,6 +29,8 @@ func TestHourMinute(t *testing.T) {
 		{"28:30pm", 0, "", 0},
 		{"12:61pm", 0, "", 0},
 		{"24:10", 0, "", 0},
+		{"2024-03-20", 0, "", 0},
+		{"due 2024-03-20", 0, "", 0},
 	}
 
 	ApplyFixtures(t, "en.HourMinute", w, fixtok)
