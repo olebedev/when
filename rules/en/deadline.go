@@ -11,12 +11,23 @@ import (
 	"github.com/pkg/errors"
 )
 
-func Deadline(s rules.Strategy) rules.Rule {
+// DeadlineOptions configures the Deadline rule.
+type DeadlineOptions struct {
+	// Aggressive makes the "in"/"within" prefix optional, so "2 hours" matches too.
+	Aggressive bool
+}
+
+func Deadline(s rules.Strategy, opts ...DeadlineOptions) rules.Rule {
 	overwrite := s == rules.Override
+
+	prefix := "(within|in)"
+	if len(opts) > 0 && opts[0].Aggressive {
+		prefix += "?"
+	}
 
 	return &rules.F{
 		RegExp: regexp.MustCompile(
-			"(?i)(?:\\W|^)(within|in)\\s*" +
+			"(?i)(?:\\W|^)" + prefix + "\\s*" +
 				"(" + INTEGER_WORDS_PATTERN + "|[0-9]+|an?(?:\\s*few)?|half(?:\\s*an?)?)\\s*" +
 				"(seconds?|min(?:ute)?s?|hours?|days?|weeks?|months?|years?)\\s*" +
 				"(?:\\W|$)"),
