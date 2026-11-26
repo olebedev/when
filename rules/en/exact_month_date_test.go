@@ -67,3 +67,41 @@ func TestExactMonthDateFromLongMonth(t *testing.T) {
 		require.Equal(t, f.Expected, res.Time, "[en.ExactMonthDate] time #%d", i)
 	}
 }
+
+// A day of month that does not exist in the given month is not a date and
+// must not be rolled over into the next month: "february 31" has no answer.
+func TestExactMonthDateInvalidDay(t *testing.T) {
+	w := when.New(nil)
+	w.Add(en.ExactMonthDate(rules.Override))
+
+	invalid := []string{
+		"february 30",
+		"february 31",
+		"31st of february",
+		"april 31",
+		"june 31",
+		"september 31",
+		"november 31",
+		"march 0",
+	}
+	for _, year := range []int{2016, 2017} {
+		ref := time.Date(year, time.January, 6, 0, 0, 0, 0, time.UTC)
+		for i, text := range invalid {
+			res, err := w.Parse(text, ref)
+			require.Nil(t, err, "err #%d", i)
+			require.Nil(t, res, "%q should not parse in %d", text, year)
+		}
+	}
+
+	// february 29 exists in a leap year only.
+	leapRef := time.Date(2016, time.January, 6, 0, 0, 0, 0, time.UTC)
+	res, err := w.Parse("february 29", leapRef)
+	require.Nil(t, err)
+	require.NotNil(t, res)
+	require.Equal(t, time.Date(2016, time.February, 29, 0, 0, 0, 0, time.UTC), res.Time)
+
+	nonLeapRef := time.Date(2017, time.January, 6, 0, 0, 0, 0, time.UTC)
+	res, err = w.Parse("february 29", nonLeapRef)
+	require.Nil(t, err)
+	require.Nil(t, res, "february 29 should not parse in a non-leap year")
+}

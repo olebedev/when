@@ -55,6 +55,16 @@ func ExactMonthDate(s rules.Strategy) rules.Rule {
 				c.Day = &num
 			}
 
+
+			// A day of month that does not exist in the given month is not
+			// a date; reject it instead of rolling over into the next month.
+			if c.Day != nil {
+				last := time.Date(ref.Year(), time.Month(monInt)+1, 0, 0, 0, 0, 0, time.UTC).Day()
+				if *c.Day < 1 || *c.Day > last {
+					return false, nil
+				}
+			}
+
 			return true, nil
 		},
 	}
